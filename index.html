@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1e3a5f">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230077cc' width='100' height='100' rx='20'/><text y='68' x='50' text-anchor='middle' font-size='50'>✈</text></svg>">
+<title>DL Ops – Calculateur</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f3f5f8; --bg2:#ffffff; --bg3:#eceff4; --border:#e2e7ee;
+    --accent:#2f6bde; --accent2:#e8890c; --accent3:#16a34a; --red:#dc2626;
+    --c-rep:#2f6bde; --c-clear:#c026d3; --c-ctot:#d97706;
+    --text:#1b2430; --text-dim:#8a97a6; --text-bright:#0e1620;
+    --input-bg:#f7f9fc; --mono:'Share Tech Mono',monospace;
+    --sans:'Barlow',sans-serif; --cond:'Barlow Condensed',sans-serif;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+    --shadow-md:0 6px 20px rgba(16,24,40,.08);
+    --radius:14px;
+    --radius-sm:9px;
+    --navy:#2f6bde; --navy-light:#4b82e8;
+    --glass-blur:none;
+  }
+  body.dark {
+    --bg:#0f141b; --bg2:#161d27; --bg3:#121822; --border:#242f3d;
+    --accent:#6aa5f8; --accent2:#ffb84d; --accent3:#4ade80; --red:#f87171;
+    --c-rep:#6aa5f8; --c-clear:#f06ec8; --c-ctot:#fbbf24;
+    --text:#cfd9e4; --text-dim:#68788a; --text-bright:#f1f6fb;
+    --input-bg:#111823;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.35);
+    --shadow-md:0 8px 24px rgba(0,0,0,.45);
+    --navy:#1d2a3a; --navy-light:#26374c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text); font-family: var(--sans);
+    min-height: 100vh; padding: 8px;
+    -webkit-font-smoothing: antialiased;
+    transition: background .3s, color .3s;
+  }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 3px; margin-bottom: 8px; max-width: 960px; margin-left: auto; margin-right: auto; }
+  .tab-btn {
+    font-family: var(--cond); font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; padding: 7px 10px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border: 1px solid var(--border); border-bottom: none; background: var(--bg3);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    color: var(--text-dim); cursor: pointer; transition: all .2s;
+  }
+  .tab-btn.active { background: var(--bg2); color: var(--accent); border-color: var(--border); box-shadow: inset 0 2px 0 var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── HEADER ── */
+  .app-header { text-align: center; margin-bottom: 6px; }
+  .app-header::before { content:''; display:block; width:30px; height:2px; background:var(--accent); margin:0 auto 6px; border-radius:2px; }
+  .app-title { font-family:var(--cond); font-size:18px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-bright); }
+  .app-title span { color:var(--accent); }
+  .app-subtitle { font-family:var(--mono); font-size:9px; color:var(--text-dim); letter-spacing:2px; margin-top:3px; }
+  .ticker { font-family:var(--mono); font-size:9px; color:#fff; text-align:center; margin-bottom:8px; letter-spacing:1px; background:var(--bg2); max-width:960px; margin-left:auto; margin-right:auto; padding:5px 10px; border-radius:var(--radius); border:1px solid var(--border); box-shadow:var(--shadow-sm); }
+  .ticker span { color:var(--accent); }
+
+  /* ── GRID ── */
+  .main-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; max-width:960px; margin:0 auto; }
+
+  /* ── PANELS ── */
+  .panel { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; transition:border-color .2s; box-shadow:var(--shadow-md); }
+  .panel:hover { border-color:var(--accent); }
+  .panel-head { display:flex; align-items:center; gap:6px; padding:8px 12px; border-bottom:1px solid var(--border); background:var(--bg2); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .panel-head .title { font-family:var(--cond); font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--accent); }
+  .panel-head .icon { font-size:12px; }
+  .panel-head .collapse-arrow { margin-left:auto; font-size:9px; color:var(--text-dim); transition:transform .2s; }
+  .panel-head .collapse-arrow.collapsed { transform:rotate(-90deg); }
+  .panel-body.collapsed, div.collapsed:not(.collapse-arrow) { display:none !important; }
+  .collapse-arrow { transition:transform .2s; }
+  .collapse-arrow.collapsed { transform:rotate(-90deg); }
+  .panel-head .actions { margin-left:auto; display:flex; gap:4px; }
+  .panel-body { padding:8px 10px; }
+
+  /* ── PARAMS ── */
+  .params-panel { grid-column:1/-1; }
+  .params-panel .panel-head { border-bottom:1px solid var(--border); }
+  .params-panel .panel-body { padding:6px 8px; }
+  .param-field { display:flex; flex-direction:column; align-items:center; gap:2px; }
+  .param-field label { font-family:var(--cond); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+  .param-field .param-sigle { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--accent); }
+  .param-divider { width:1px; height:32px; background:var(--border); flex-shrink:0; }
+  .vol-field { display:flex; flex-direction:column; align-items:flex-start; gap:2px; }
+  .vol-field label { font-family:var(--cond); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+
+  /* ── INPUTS ── */
+  input[type="text"], input[type="number"] {
+    background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-sm);
+    color:var(--text-bright); font-family:var(--mono); font-size:14px; font-weight:600;
+    padding:5px 6px; width:100%; text-align:center; outline:none; transition:border-color .2s, box-shadow .2s; letter-spacing:1px;
+  }
+  input[type="text"]::placeholder, input[type="number"]::placeholder { color:var(--text-dim); opacity:.55; }
+  input[type="text"]:focus, input[type="number"]:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(93,173,226,.25); background:var(--bg2); }
+  input.error { border-color:var(--red); box-shadow:0 0 0 2px rgba(239,68,68,.1); }
+  input.valid { border-color:var(--accent3); }
+  input[type="number"] { width:auto; }
+  .input-hint { font-family:var(--mono); font-size:8px; color:var(--text-dim); text-align:center; }
+  input.vol-input { font-size:12px; text-align:center; padding:4px 6px; }
+
+  /* ── FIELD ROWS ── */
+  .field { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+  .field:last-child { margin-bottom:0; }
+  .field input { flex:1; }
+  .field-sigle { font-family:var(--mono); font-size:11px; font-weight:600; color:var(--accent); width:36px; flex-shrink:0; }
+  .field-label { font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:.5px; flex:1; }
+
+  /* ── RESULTS ── */
+  .results-panel { grid-column:1/-1; }
+  .synth-bar { display:flex; align-items:stretch; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-bottom:6px; }
+  .synth-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:7px 4px; gap:2px; }
+  .synth-item.synth-main { background:rgba(47,107,222,.08); }
+  body.dark .synth-item.synth-main { background:rgba(106,165,248,.12); }
+  .synth-item.delay { background:rgba(255,90,110,.28); }
+  .synth-item.delay .synth-val { color:#fff !important; }
+  .synth-item.delay .synth-lbl { color:var(--text-bright); }
+  .synth-lbl { font-family:var(--mono); font-size:8px; color:var(--text-dim); letter-spacing:1px; }
+  .synth-val { font-family:var(--mono); font-size:17px; font-weight:700; line-height:1; }
+  .synth-val.ok { color:var(--accent3); } .synth-val.warn { color:var(--accent2); } .synth-val.na { color:var(--text-dim); font-size:14px; }
+  .synth-sep { width:1px; background:var(--border); }
+  .synth-notes { display:flex; flex-direction:column; gap:1px; margin-bottom:8px; }
+  .synth-notes span { font-family:var(--mono); font-size:8px; color:var(--text-dim); }
+  .synth-notes span:empty { display:none; }
+  .decomp-title { font-family:var(--cond); font-size:9px; font-weight:700; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; margin-bottom:6px; padding-top:4px; border-top:1px dashed var(--border); }
+  .justify-box { display:flex; align-items:center; gap:8px; margin-top:8px; padding:10px 12px; background:rgba(231,126,34,.08); border:1.5px solid var(--accent2); border-radius:var(--radius-sm); }
+  .justify-text { font-family:var(--mono); font-size:12px; font-weight:700; color:var(--accent2); line-height:1.4; }
+  .justify-text b { font-size:14px; font-weight:800; }
+  .justify-box.zero { background:rgba(46,204,113,.06); border-color:var(--accent3); }
+  .justify-box.zero .justify-text { color:var(--accent3); }
+  .result-card { background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px 8px; transition:all .3s; }
+  .result-card.highlight { border-color:var(--accent); box-shadow:var(--shadow-md); }
+  .rc-label { font-family:var(--mono); font-size:8px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:2px; }
+  .rc-value { font-family:var(--mono); font-size:16px; font-weight:700; color:var(--text-bright); line-height:1; transition:color .3s; }
+  .rc-value.ok { color:var(--accent3); } .rc-value.warn { color:var(--accent2); } .rc-value.na { color:var(--text-dim); font-size:13px; }
+  .rc-note { font-size:8px; color:var(--text-dim); margin-top:2px; }
+
+  /* ── DECOMP ── */
+  .decomp-section { grid-column:1/-1; }
+  .decomp-bars { display:flex; flex-direction:column; gap:9px; }
+  .decomp-row { display:flex; align-items:center; gap:6px; }
+  .decomp-row .dr-label { font-family:var(--mono); font-size:9px; color:var(--text-dim); width:180px; flex-shrink:0; }
+  .decomp-row .dr-bar-wrap { flex:1; height:14px; background:var(--bg3); border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border); }
+  .decomp-row .dr-bar { height:100%; border-radius:var(--radius-sm); transition:width .6s cubic-bezier(.4,0,.2,1); }
+  .dr-bar.rep { background:linear-gradient(90deg,#5dade2,#7ec8f0); }
+  .dr-bar.ctot { background:linear-gradient(90deg,#f59e0b,#fbbf24); }
+  .dr-bar.dep { background:linear-gradient(90deg,#10b981,#34d399); }
+  .decomp-row .dr-val { font-family:var(--mono); font-size:10px; font-weight:700; width:48px; text-align:right; flex-shrink:0; }
+
+  /* ── CAUSES ── */
+  .causes-panel { grid-column:1/-1; }
+  .causes-table { width:100%; border-collapse:collapse; }
+  .causes-table th { font-family:var(--cond); font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); padding:5px 6px; text-align:left; border-bottom:1px solid var(--border); }
+  .causes-table td { padding:3px 5px; }
+  .causes-table input[type="text"] { width:100%; font-size:11px; padding:4px 7px; text-align:left; }
+  .causes-table input[type="number"] { width:66px; font-size:11px; padding:4px 7px; }
+  .causes-total { display:flex; align-items:center; justify-content:space-between; margin-top:12px; padding:10px 14px; background:var(--bg3); border-radius:var(--radius-sm); border:1px solid var(--border); }
+  .ct-label { font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:1px; }
+  .ct-val { font-family:var(--mono); font-size:18px; font-weight:700; }
+  .ct-remaining { font-family:var(--mono); font-size:14px; font-weight:700; padding:4px 12px; border-radius:var(--radius-sm); transition:all .3s; }
+  .ct-remaining.pending { background:rgba(245,158,11,.1); color:var(--accent2); border:1px solid rgba(245,158,11,.25); }
+  .ct-remaining.done    { background:rgba(16,185,129,.1);  color:var(--accent3); border:1px solid rgba(16,185,129,.25); }
+  .ct-remaining.over    { background:rgba(239,68,68,.1);  color:var(--red);     border:1px solid rgba(239,68,68,.25); }
+  .ct-status { font-family:var(--mono); font-size:11px; padding:3px 9px; border-radius:3px; background:var(--bg2); border:1px solid var(--border); }
+
+  /* Remaining badge in causes header */
+  .remaining-badge { font-family:var(--mono); font-size:11px; font-weight:700; padding:3px 12px; border-radius:3px; transition:all .3s; }
+  .remaining-badge.pending { background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); color:var(--accent2); }
+  .remaining-badge.done    { background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.3); color:var(--accent3); }
+  .remaining-badge.over    { background:rgba(239,68,68,.1);  border:1px solid rgba(239,68,68,.3);  color:var(--red); }
+
+  /* ── SAVE BUTTON ── */
+  .btn-save {
+    background: var(--accent);
+    border: 1px solid var(--accent); color: #fff;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 1px;
+    padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all .2s;
+  }
+  .btn-save:hover { background: var(--navy-light); }
+  .btn-reset {
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text-dim);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    padding: 8px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all .2s;
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  }
+  .btn-reset:hover { border-color: var(--red); color: var(--red); }
+  .btns-row { display:flex; gap:6px; justify-content:flex-end; max-width:960px; margin:8px auto 0; }
+
+  .save-flash { font-family:var(--mono); font-size:10px; color:var(--accent3); opacity:0; transition:opacity .3s; }
+  .save-flash.show { opacity:1; }
+
+  /* ── COMPUTED FIELDS (PTD, ADCT recalculée) ── */
+  .computed-field { background:rgba(245,158,11,.06); border-radius:var(--radius-sm); padding:6px 10px; border:1px solid rgba(245,158,11,.2); }
+  .computed-field.highlight { background:rgba(245,158,11,.1); border-color:rgba(245,158,11,.4); animation:pulse-in .4s ease-out; }
+  .computed-value { font-family:var(--mono); font-size:14px; font-weight:700; color:var(--accent2); letter-spacing:1px; }
+
+  /* ── FIRSTWAVE: grey out arrival panel ── */
+  #arr-fields.disabled, #panel-dep.disabled, #field-ctot.disabled { opacity:0.3; pointer-events:none; filter:grayscale(1); transition:all .3s; }
+  #arr-fields, #panel-dep, #field-ctot { transition:all .3s; }
+
+  /* ── QUICK CALL CONTACTS ── */
+
+  .contact-btn {
+    display:flex; align-items:center; gap:6px; padding:8px 14px;
+    border-radius:var(--radius-sm); cursor:pointer; transition:all .2s;
+    font-family:var(--mono); font-size:12px; font-weight:600; min-height:40px;
+  }
+  .contact-btn.ezy-contact { background:rgba(234,88,12,.06); border:1px solid rgba(234,88,12,.2); color:#c2410c; }
+  .contact-btn.ezy-contact:active { background:rgba(234,88,12,.12); }
+  .contact-btn.vly-contact { background:rgba(202,138,4,.06); border:1px solid rgba(202,138,4,.2); color:#a16207; }
+  .contact-btn.vly-contact:active { background:rgba(202,138,4,.12); }
+  .contact-icon { font-size:16px; }
+  .contact-name { font-size:11px; letter-spacing:.5px; }
+  .contact-nonum { font-size:9px; opacity:.6; }
+
+  @media(max-width:768px){
+    .contact-btn { flex:1; justify-content:center; min-height:44px; padding:8px 10px; }
+  }
+
+  /* ── PRESET BUTTONS ── */
+  .presets-bar { display:flex; align-items:center; gap:4px; max-width:960px; margin:0 auto 6px; flex-wrap:wrap; }
+  .presets-label { font-family:var(--mono); font-size:8px; color:var(--text-dim); letter-spacing:2px; text-transform:uppercase; margin-right:2px; white-space:nowrap; }
+  .preset-btn { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:1px; padding:5px 10px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; border:1px solid var(--border); background:var(--bg3); color:var(--text-dim); white-space:nowrap; box-shadow:var(--shadow-sm); }
+  .preset-btn:hover { transform:translateY(-1px); box-shadow:var(--shadow-md); }
+  .preset-btn.ezy { border-color:rgba(234,88,12,.3); }
+  .preset-btn.ezy:hover, .preset-btn.ezy.active { background:rgba(234,88,12,.08); color:#c2410c; border-color:#ea580c; }
+  .preset-btn.vly { border-color:rgba(202,138,4,.3); }
+  .preset-btn.vly:hover, .preset-btn.vly.active { background:rgba(202,138,4,.08); color:#a16207; border-color:#ca8a04; }
+  .preset-btn.crew { border-color:var(--accent); }
+  .preset-btn.crew:hover, .preset-btn.crew.active { background:var(--bg2); color:var(--accent); border-color:var(--accent); }
+  .preset-btn.fw { border-color:rgba(202,138,4,.25); }
+  .preset-btn.fw:hover, .preset-btn.fw.active { background:rgba(202,138,4,.06); color:#a16207; border-color:#ca8a04; }
+  .preset-divider { width:1px; height:18px; background:var(--border); flex-shrink:0; }
+  .preset-active { font-family:var(--mono); font-size:10px; color:var(--text-dim); margin-left:4px; }
+
+  /* ── HISTORY TAB ── */
+  .history-wrap { max-width: 960px; margin: 0 auto; }
+  .history-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .history-search { background:var(--input-bg); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:var(--mono); font-size:12px; padding:7px 12px; outline:none; flex:1; min-width:180px; }
+  .history-search:focus { border-color:var(--accent); }
+  .hist-sort-btns { display:flex; gap:4px; }
+  .sort-btn { background:transparent; border:1px solid var(--border); color:var(--text-dim); font-family:var(--mono); font-size:10px; padding:5px 10px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; letter-spacing:.5px; }
+  .sort-btn:hover, .sort-btn.active { border-color:var(--accent); color:var(--accent); background:var(--bg2); }
+  .history-count { font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-left:auto; white-space:nowrap; }
+  .btn-clear-all { background:transparent; border:1px solid var(--border); color:var(--text-dim); font-family:var(--mono); font-size:10px; padding:5px 10px; border-radius:4px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+  .btn-clear-all:hover { border-color:var(--red); color:var(--red); }
+  .hist-actions-bar { display:flex; align-items:center; gap:8px; margin-bottom:14px; max-width:960px; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
+  .btn-export { background:var(--bg3); border:1px solid var(--accent); color:var(--accent); font-family:var(--mono); font-size:10px; padding:5px 10px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; white-space:nowrap; }
+  .btn-export:hover { background:var(--bg2); }
+  .import-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#ffffff; border:1px solid rgba(16,185,129,.3); color:var(--accent3); font-family:var(--mono); font-size:12px; padding:10px 24px; border-radius:var(--radius); box-shadow:0 8px 30px rgba(0,0,0,.12); z-index:200; opacity:0; transition:opacity .3s; pointer-events:none; }
+  .import-toast.show { opacity:1; }
+
+  /* ── VOL CARDS ── */
+  #hist-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+
+  .vol-card {
+    background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+    overflow:hidden; transition:all .25s; cursor:default;
+    display:flex; flex-direction:column; box-shadow:var(--shadow-sm);
+  }
+  .vol-card:hover { border-color:var(--border); box-shadow:var(--shadow-md); transform:translateY(-2px); }
+
+  .vc-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px; background:var(--navy);
+    border-bottom:1px solid var(--border);
+  }
+  .vc-vol { font-family:var(--mono); font-size:15px; font-weight:700; color:#fff; letter-spacing:1px; }
+  .vc-date { font-family:var(--mono); font-size:11px; color:var(--text-dim); }
+  .vc-ttm { font-family:var(--mono); font-size:10px; color:#fff; background:var(--navy-light); padding:2px 7px; border-radius:3px; border:1px solid var(--border); }
+
+  .vc-times {
+    display:grid; grid-template-columns:1fr 1px 1fr;
+    padding:10px 14px; gap:0; border-bottom:1px solid var(--border);
+  }
+  .vc-side { display:flex; flex-direction:column; gap:5px; }
+  .vc-side-title { font-family:var(--cond); font-size:10px; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; margin-bottom:2px; }
+  .vc-time-row { display:flex; align-items:center; justify-content:space-between; gap:6px; }
+  .vc-time-lbl { font-family:var(--mono); font-size:9px; color:var(--text-dim); width:32px; }
+  .vc-time-val { font-family:var(--mono); font-size:13px; color:var(--text); }
+  .vc-divider { width:1px; background:var(--border); margin:0 10px; }
+
+  .vc-dls {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:1px; background:var(--border);
+    border-bottom:1px solid var(--border);
+  }
+  .vc-dl-item { background:var(--bg2); padding:8px 12px; display:flex; flex-direction:column; gap:2px; }
+  .vc-dl-label { font-family:var(--mono); font-size:9px; color:var(--text-dim); letter-spacing:.5px; text-transform:uppercase; }
+  .vc-dl-val { font-family:var(--mono); font-size:17px; font-weight:700; line-height:1; }
+  .vc-dl-val.ok { color:var(--accent3); }
+  .vc-dl-val.warn { color:var(--accent2); }
+  .vc-dl-val.na { color:var(--text-dim); font-size:13px; }
+
+  .vc-decomp { padding:8px 14px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:5px; }
+  .vc-decomp-row { display:flex; align-items:center; gap:8px; }
+  .vc-decomp-lbl { font-family:var(--mono); font-size:9px; color:var(--text-dim); width:68px; flex-shrink:0; }
+  .vc-decomp-bar-wrap { flex:1; height:6px; background:var(--bg3); border-radius:2px; overflow:hidden; }
+  .vc-decomp-bar { height:100%; border-radius:2px; transition:width .5s; }
+  .vc-decomp-val { font-family:var(--mono); font-size:10px; font-weight:700; width:38px; text-align:right; flex-shrink:0; }
+
+  .vc-causes { padding:8px 14px; border-bottom:1px solid var(--border); display:flex; flex-wrap:wrap; gap:4px; min-height:32px; }
+  .vc-cause-tag { font-family:var(--mono); font-size:9px; padding:3px 8px; border-radius:var(--radius-sm); background:var(--bg2); border:1px solid var(--border); color:var(--text); }
+  .vc-cause-tag .tag-min { color:var(--accent2); margin-left:3px; }
+  .vc-no-causes { font-family:var(--mono); font-size:9px; color:var(--text-dim); font-style:italic; }
+
+  .vc-actions { display:flex; gap:6px; padding:8px 12px; margin-top:auto; }
+  .btn-load { background:var(--bg3); border:1px solid var(--accent); color:var(--accent); font-family:var(--mono); font-size:10px; padding:4px 10px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; flex:1; }
+  .btn-load:hover { background:var(--bg2); }
+  .btn-del { background:transparent; border:1px solid rgba(239,68,68,.15); color:var(--red); font-family:var(--mono); font-size:10px; padding:4px 10px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; }
+  .btn-del:hover { background:rgba(239,68,68,.06); }
+
+  .empty-state { text-align:center; padding:50px 20px; font-family:var(--mono); font-size:12px; color:var(--text-dim); line-height:1.8; }
+
+  @keyframes pulse-in { 0%{opacity:.4;transform:scale(.97)} 100%{opacity:1;transform:scale(1)} }
+  .updated { animation:pulse-in .3s ease-out; }
+
+  /* ── MOBILE OPTIMIZATION ── */
+  @media(max-width:768px){
+    body { padding:8px 8px 72px 8px; -webkit-tap-highlight-color:transparent; }
+
+    /* Header compact */
+    .app-header { margin-bottom:8px; }
+    .app-header::before { margin-bottom:8px; }
+    .app-title { font-size:18px; letter-spacing:2px; }
+    .app-subtitle { font-size:9px; }
+    .ticker { font-size:9px; margin-bottom:8px; }
+
+    /* Tabs → bottom sticky nav */
+    .tabs {
+      position:fixed; bottom:0; left:0; right:0; z-index:50;
+      background:var(--bg2); border-top:1px solid var(--border);
+      margin:0; gap:0; max-width:100%;
+      padding:0 0 env(safe-area-inset-bottom,0);
+      box-shadow:0 -2px 16px rgba(0,0,0,.06);
+    }
+    .tab-btn {
+      flex:1; text-align:center; font-size:10px; padding:10px 4px;
+      border:none; border-radius:0; letter-spacing:1px;
+      border-top:2px solid transparent; box-shadow:none;
+    }
+    .tab-btn.active { border-top-color:var(--accent); background:var(--bg2); box-shadow:none; color:var(--accent); }
+    .tab-btn { display:flex; flex-direction:column; align-items:center; gap:2px; line-height:1; }
+    .tab-label { font-size:9px; letter-spacing:0.5px; }
+
+    /* Presets → scrollable row */
+    .presets-bar {
+      gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+      padding:4px 0; margin-bottom:8px; flex-wrap:nowrap;
+    }
+    .presets-label { display:none; }
+    .preset-btn { font-size:10px; padding:6px 10px; flex-shrink:0; min-height:32px; }
+    .preset-divider { height:20px; }
+
+    /* Main grid → single column */
+    .main-grid { grid-template-columns:1fr; gap:8px; }
+
+    /* Params panel → vertical, bigger targets */
+    .params-panel { flex-direction:column; }
+    .params-panel .panel-head { border-right:none; border-bottom:1px solid var(--border); }
+    .params-panel .panel-body { flex-wrap:wrap; gap:10px; padding:12px; }
+    .param-divider { width:100%; height:1px; margin:0; }
+    .param-field { flex-direction:row; align-items:center; gap:10px; width:100%; justify-content:space-between; }
+    .param-field label { font-size:11px; }
+    .vol-field { width:100%; }
+    .vol-field input { width:100%; }
+
+    /* ALL INPUTS bigger for touch */
+    input[type="text"], input[type="number"] {
+      font-size:18px !important; padding:10px 12px !important;
+      min-height:44px; border-radius:var(--radius-sm);
+      -webkit-appearance:none;
+    }
+    input[type="number"] { width:80px; }
+    input.vol-input { font-size:16px !important; }
+
+    /* Computed fields (PTD, ADCT) */
+    .computed-field { padding:8px 10px; min-height:44px; }
+    .computed-value { font-size:14px; }
+
+    /* Field rows → more spacing */
+    .field { margin-bottom:10px; gap:10px; }
+    .field-sigle { font-size:14px; width:44px; }
+    .field-label { font-size:12px; }
+
+    /* Results grid → 2 cols, bigger cards */
+    .results-panel { grid-column:1; }
+    .results-grid { grid-template-columns:1fr 1fr; gap:4px; }
+    .result-card { padding:6px 8px; }
+    .rc-label { font-size:7px; letter-spacing:0.5px; }
+    .rc-value { font-size:15px; }
+    .rc-note { font-size:7px; }
+
+    /* Decomp bars */
+    .decomp-section { grid-column:1; }
+    .decomp-row { gap:4px; }
+    .decomp-row .dr-label { width:80px; font-size:8px; }
+    .dr-val { font-size:9px; width:44px; }
+
+    /* Causes panel */
+    .causes-panel { grid-column:1; }
+    .causes-table th { font-size:9px; padding:5px 4px; }
+    .causes-table td { padding:4px 3px; }
+    .causes-table input[type="text"] { font-size:13px !important; padding:8px 6px !important; min-height:40px; }
+    .causes-table input[type="number"] { width:60px; font-size:13px !important; padding:8px 6px !important; min-height:40px; }
+
+    /* Action buttons → full width, tall */
+    .btns-row { flex-direction:row; gap:6px; margin-top:6px; padding:0 4px; }
+    .btn-save, .btn-reset { font-size:13px; padding:14px 20px; width:100%; text-align:center; min-height:48px; border-radius:var(--radius-sm); }
+
+    /* History */
+    #hist-cards { grid-template-columns:1fr; }
+    .history-toolbar { gap:6px; flex-direction:column; }
+    .history-search { font-size:14px; min-height:44px; padding:10px 14px; width:100%; min-width:0; }
+    .hist-sort-btns { display:none; }
+    .history-count { margin-left:0; }
+    .btn-clear-all, .btn-export { font-size:11px; padding:10px 14px; min-height:42px; }
+    .vol-card:hover { transform:none; } /* no hover on mobile */
+    .btn-load, .btn-del { padding:10px; font-size:12px; min-height:42px; }
+
+    /* Vol card */
+    .vc-times { grid-template-columns:1fr 1px 1fr; }
+    .vc-time-val { font-size:14px; }
+    .vc-dl-val { font-size:18px; }
+    .vc-decomp-lbl { width:60px; font-size:9px; }
+    .vc-vol { font-size:16px; }
+
+    /* Codes DL */
+    .codes-toolbar { gap:6px; flex-direction:column; }
+    .codes-search-wrap { width:100%; min-width:0; }
+    .codes-search { font-size:14px !important; min-height:44px; padding:10px 32px 10px 30px !important; }
+    .codes-filter-btns { width:100%; justify-content:space-between; }
+    .codes-filter { flex:1; text-align:center; padding:10px 8px; min-height:42px; font-size:11px; }
+    .btn-add-code { font-size:12px; padding:10px 14px; width:100%; text-align:center; min-height:44px; }
+    .code-card { gap:10px; padding:12px; flex-wrap:wrap; }
+    .code-badge { font-size:18px; min-width:48px; padding:8px; }
+    .code-desc { font-size:13px; }
+    .code-keywords { font-size:9px; }
+    .code-keywords span { padding:2px 6px; margin-bottom:2px; }
+    .code-del-btn { font-size:16px; padding:8px; min-width:40px; min-height:40px; }
+
+    /* Modal → full screen on mobile */
+    .modal { width:100vw; max-width:100vw; border-radius:16px 16px 0 0; top:auto; bottom:0; transform:translateX(-50%); }
+    .modal-body { padding:16px; }
+    .modal-field input[type="text"] { font-size:14px !important; min-height:44px; }
+    .modal-footer { padding:12px 16px env(safe-area-inset-bottom,12px); }
+    .modal-footer .btn-save, .modal-footer .btn-reset { min-height:44px; font-size:13px; }
+
+    /* Panel heads tap-friendly */
+    .panel-head { padding:10px 14px; min-height:42px; }
+
+    /* Hist actions bar */
+    .hist-actions-bar { display:flex; gap:6px; margin-bottom:12px; }
+    .hist-actions-bar .btn-export, .hist-actions-bar .btn-clear-all { flex:1; text-align:center; min-height:42px; font-size:11px; }
+
+    /* Toast above bottom nav */
+    .import-toast { bottom:80px; font-size:13px; padding:12px 20px; max-width:90vw; }
+
+    /* Live widget mobile */
+    .live-widget { padding:8px 10px; margin:0 8px 8px; }
+    .lw-row { gap:8px; }
+    .lw-vol { font-size:13px; }
+    .lw-chrono { font-size:18px; }
+    .lw-sep { height:22px; }
+
+    /* Stats */
+    .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
+    .stat-val { font-size:22px; }
+
+    /* Quick search */
+    .quick-search-panel { max-height:75vh; }
+    .qs-input { font-size:16px !important; min-height:44px; }
+    .qs-item { padding:12px; }
+    .qs-code { font-size:16px; }
+
+    /* Buttons row mobile */
+    .btn-copy { font-size:12px; padding:12px 16px; min-height:48px; width:100%; text-align:center; border-radius:var(--radius-sm); }
+  }
+
+  @media(max-width:420px){
+    .app-title { font-size:16px; }
+    .results-grid { grid-template-columns:1fr 1fr; }
+    .rc-value { font-size:18px; }
+    .decomp-row .dr-label { width:80px; font-size:8px; }
+    .causes-table td:nth-child(3),
+    .causes-table th:nth-child(3) { display:none; }
+    .causes-table td:nth-child(4),
+    .causes-table th:nth-child(4) { display:none; }
+  }
+  /* ── CODES DL TAB ── */
+
+  /* ── TIME CALCULATOR ── */
+  .tc-wrap { max-width:400px; margin:0 auto; }
+  .tc-display {
+    background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:20px 20px 16px; margin-bottom:8px; text-align:right;
+    min-height:120px; display:flex; flex-direction:column; justify-content:flex-end;
+    box-shadow:var(--shadow-sm);
+  }
+  .tc-history-line { font-family:var(--mono); font-size:14px; color:var(--text-dim); min-height:22px; letter-spacing:1px; }
+  .tc-main-val { font-family:var(--mono); font-size:48px; font-weight:700; color:var(--text-bright); letter-spacing:3px; line-height:1.1; }
+  .tc-history {
+    max-height:180px; overflow-y:auto; margin-bottom:8px;
+    display:flex; flex-direction:column; gap:1px;
+  }
+  .tc-hist-item {
+    background:var(--bg2); border:1px solid var(--border); border-radius:5px;
+    padding:8px 14px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+    transition:all .15s;
+  }
+  .tc-hist-item:active { background:var(--bg3); border-color:var(--accent); }
+  .tc-hist-expr { font-family:var(--mono); font-size:12px; color:var(--text-dim); }
+  .tc-hist-result { font-family:var(--mono); font-size:16px; font-weight:700; color:var(--text-bright); }
+  .tc-keypad {
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:6px;
+  }
+  .tc-key {
+    font-family:var(--mono); font-size:22px; font-weight:600;
+    padding:18px 0; border:1px solid var(--border); border-radius:var(--radius-sm);
+    background:var(--bg2); color:var(--text-bright); cursor:pointer;
+    transition:all .1s; user-select:none; -webkit-user-select:none;
+    display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm);
+  }
+  .tc-key:active { background:var(--bg3); transform:scale(.95); }
+  .tc-key.tc-fn { background:rgba(245,158,11,.06); color:var(--accent2); border-color:rgba(245,158,11,.2); font-size:16px; font-weight:700; }
+  .tc-key.tc-fn:active { background:rgba(245,158,11,.12); }
+  .tc-key.tc-op { background:var(--bg2); color:var(--accent); border-color:var(--border); font-size:26px; }
+  .tc-key.tc-op:active { background:var(--navy-light); }
+  .tc-key.tc-plus { background:rgba(16,185,129,.04); color:var(--accent3); border-color:rgba(16,185,129,.2); }
+  .tc-key.tc-minus { background:rgba(239,68,68,.04); color:var(--red); border-color:rgba(239,68,68,.15); }
+  .tc-key.tc-eq { background:var(--navy); color:#fff; border-color:var(--accent); font-size:28px; font-weight:800; }
+  .tc-key.tc-eq:active { background:var(--navy-light); }
+  .tc-key.tc-small { font-size:14px; }
+  .tc-key.tc-now { font-size:13px; font-weight:800; background:rgba(16,185,129,.04); color:var(--accent3); border-color:rgba(16,185,129,.2); letter-spacing:1px; }
+  .tc-key.tc-now:active { background:rgba(16,185,129,.12); }
+
+  @media(max-width:768px){
+    .tc-wrap { max-width:100%; padding:0 4px; }
+    .tc-main-val { font-size:42px; }
+    .tc-key { padding:16px 0; font-size:20px; border-radius:6px; min-height:52px; }
+    .tc-key.tc-op { font-size:24px; }
+    .tc-key.tc-eq { font-size:26px; }
+    .tc-key.tc-fn { font-size:15px; }
+  }
+
+  /* ── LIVE WIDGET (top banner) ── */
+  .live-widget {
+    display:none; max-width:960px; margin:0 auto 10px;
+    background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:12px 16px; transition:all .3s; box-shadow:var(--shadow-sm);
+  }
+  .live-widget.active { display:block; }
+  .lw-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .lw-vol { font-family:var(--mono); font-size:16px; font-weight:700; color:var(--accent); letter-spacing:1px; }
+  .lw-chrono { font-family:var(--mono); font-size:22px; font-weight:700; color:var(--text-bright); letter-spacing:2px; }
+  .lw-ttm-bar { flex:1; min-width:100px; height:8px; background:var(--bg3); border-radius:4px; overflow:hidden; border:1px solid var(--border); }
+  .lw-ttm-fill { height:100%; border-radius:4px; transition:width 1s linear; background:linear-gradient(90deg,var(--accent3),var(--navy)); }
+  .lw-label { font-family:var(--mono); font-size:9px; color:var(--text-dim); letter-spacing:1px; }
+  .lw-ptd { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--accent2); }
+  .lw-sep { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+
+  /* ── AIRLINE THEME COLORS ── */
+  body.theme-ezy { --accent:#ea580c; }
+  body.theme-ezy .app-title span { color:#ea580c; }
+  body.theme-ezy .tab-btn.active { color:#ea580c; border-top-color:#ea580c; }
+  body.theme-ezy .panel:hover { border-color:rgba(234,88,12,.15); }
+  body.theme-ezy .field-sigle { color:#ea580c; }
+  body.theme-ezy .panel-head .title { color:#ea580c; }
+  body.theme-ezy .lw-vol { color:#ea580c; }
+
+  body.theme-vly { --accent:#ca8a04; }
+  body.theme-vly .app-title span { color:#ca8a04; }
+  body.theme-vly .tab-btn.active { color:#ca8a04; border-top-color:#ca8a04; }
+  body.theme-vly .panel:hover { border-color:rgba(202,138,4,.15); }
+  body.theme-vly .field-sigle { color:#ca8a04; }
+  body.theme-vly .panel-head .title { color:#ca8a04; }
+  body.theme-vly .lw-vol { color:#ca8a04; }
+
+  /* ── COPY BUTTON ── */
+  .btn-fr24 { background:rgba(202,138,4,.06); border:1px solid rgba(202,138,4,.2); color:#a16207; font-size:16px; padding:6px 10px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; min-width:40px; min-height:40px; display:flex; align-items:center; justify-content:center; }
+  .btn-fr24:hover { background:rgba(202,138,4,.12); }
+  .btn-fr24.lw-fr24 { font-size:14px; padding:4px 8px; min-width:32px; min-height:28px; }
+  .btn-copy { background:rgba(93,173,226,.15); border:1px solid var(--accent); color:var(--accent); font-family:var(--mono); font-size:11px; letter-spacing:1px; padding:8px 18px; border-radius:var(--radius-sm); cursor:pointer; transition:all .2s; }
+  .btn-copy:hover { background:rgba(93,173,226,.3); }
+
+  /* ── FEUILLES DE VOL ── */
+  #sheets-bar { display:flex; gap:5px; max-width:960px; margin:0 auto 6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:2px; }
+  #sheets-bar::-webkit-scrollbar { display:none; }
+  .sheet-chip { display:flex; align-items:center; gap:6px; padding:5px 11px; border-radius:20px; border:1px solid var(--border); background:var(--bg2); font-family:var(--mono); font-size:10px; font-weight:700; color:var(--text-dim); cursor:pointer; white-space:nowrap; flex-shrink:0; transition:all .2s; box-shadow:var(--shadow-sm); }
+  .sheet-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .sheet-chip .sheet-x { font-size:11px; opacity:.6; padding:0 2px; }
+  .sheet-chip .sheet-x:active { opacity:1; }
+  .sheet-add { width:26px; height:26px; border-radius:50%; border:1px dashed var(--border); background:var(--bg2); color:var(--accent); font-size:14px; font-weight:700; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+
+  /* ── TIMELINE STD (jalons fixes) ── */
+  #std-timeline { margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+  .stl-wrap { position:relative; height:66px; }
+  .stl-track { position:absolute; top:34px; left:0; right:0; height:4px; background:var(--bg3); border-radius:2px; }
+  body.dark .stl-track { background:var(--border); }
+  .stl-fill { position:absolute; top:34px; left:0; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--accent3),var(--accent)); transition:width 1s linear; }
+  .stl-dot { position:absolute; top:31px; width:10px; height:10px; border-radius:50%; background:var(--bg2); border:2px solid var(--text-dim); transform:translateX(-50%); z-index:2; }
+  .stl-dot.passed { background:var(--accent3); border-color:var(--accent3); }
+  .stl-dot.next { border-color:var(--accent); animation:stlPulse 2s infinite; }
+  .stl-dot.std { width:13px; height:13px; top:29px; border-width:2.5px; border-color:var(--accent); }
+  .stl-dot.std.passed { background:var(--accent); border-color:var(--accent); }
+  .stl-time { position:absolute; top:14px; transform:translateX(-50%); font-family:var(--mono); font-size:10px; color:var(--text-dim); white-space:nowrap; }
+  .stl-label { position:absolute; top:48px; transform:translateX(-50%); font-family:var(--cond); font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--text-dim); white-space:nowrap; }
+  .stl-time.passed, .stl-label.passed { color:var(--accent3); }
+  .stl-time.next, .stl-label.next { color:var(--accent); }
+  .stl-time.shifted:not(.passed), .stl-label.shifted:not(.passed) { color:var(--accent2); }
+  .stl-dot.shifted:not(.passed) { border-color:var(--accent2); }
+  .stl-left { transform:translateX(0) !important; }
+  .stl-right { transform:translateX(-100%) !important; }
+  .stl-cursor { position:absolute; top:24px; height:24px; width:2px; background:var(--red); transform:translateX(-50%); border-radius:1px; transition:left 1s linear; z-index:3; }
+  .stl-cursor::before { content:''; position:absolute; top:-4px; left:50%; transform:translateX(-50%); border:4px solid transparent; border-top-color:var(--red); }
+  .stl-now { position:absolute; top:0; transform:translateX(-50%); font-family:var(--mono); font-size:9px; font-weight:700; color:#fff; background:var(--red); padding:1px 7px; border-radius:8px; transition:left 1s linear; letter-spacing:.5px; z-index:3; }
+  @keyframes stlPulse { 0%,100%{ box-shadow:0 0 0 3px rgba(47,107,222,.2);} 50%{ box-shadow:0 0 0 7px rgba(47,107,222,.06);} }
+
+  /* ── QUICK SEARCH OVERLAY (code DL from calc) ── */
+  .quick-search-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:150; }
+  .quick-search-overlay.open { display:block; }
+  .quick-search-panel { position:fixed; bottom:0; left:0; right:0; max-height:70vh; background:var(--bg2); border-top:2px solid var(--accent); border-radius:16px 16px 0 0; z-index:151; display:none; flex-direction:column; overflow:hidden; box-shadow:0 -8px 30px rgba(0,0,0,.1); }
+  .quick-search-panel.open { display:flex; }
+  .qs-header { display:flex; align-items:center; gap:8px; padding:14px 16px; border-bottom:1px solid var(--border); }
+  .qs-input { flex:1; background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--mono); font-size:14px; padding:10px 12px; outline:none; }
+  .qs-input:focus { border-color:var(--accent); }
+  .qs-close { background:none; border:none; color:var(--text-dim); font-size:18px; cursor:pointer; padding:4px 8px; }
+  .qs-results { flex:1; overflow-y:auto; padding:8px; display:flex; flex-direction:column; gap:6px; }
+  .qs-item { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
+  .qs-item:active { background:var(--bg2); border-color:var(--accent); }
+  .qs-code { font-family:var(--mono); font-size:18px; font-weight:800; color:var(--accent); min-width:40px; }
+  .qs-desc { font-size:12px; color:var(--text); flex:1; }
+  .qs-add { font-family:var(--mono); font-size:10px; color:var(--accent3); background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2); border-radius:4px; padding:4px 8px; cursor:pointer; white-space:nowrap; }
+
+  /* ── STATS TAB ── */
+  .stats-wrap { max-width:960px; margin:0 auto; }
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px; margin-bottom:16px; }
+  .stat-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; text-align:center; box-shadow:var(--shadow-sm); }
+  .stat-val { font-family:var(--mono); font-size:28px; font-weight:700; color:var(--text-bright); }
+  .stat-label { font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-top:4px; }
+  .stat-section-title { font-family:var(--cond); font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); margin:16px 0 8px; }
+  .cause-rank { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:6px; }
+  .cause-rank-pos { font-family:var(--mono); font-size:14px; font-weight:700; color:var(--accent); width:24px; text-align:center; }
+  .cause-rank-label { flex:1; font-size:12px; color:var(--text); }
+  .cause-rank-bar { width:80px; height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; }
+  .cause-rank-fill { height:100%; border-radius:3px; background:var(--accent); }
+  .cause-rank-val { font-family:var(--mono); font-size:11px; color:var(--text-dim); width:50px; text-align:right; }
+
+  /* ── CREW PHRASES ── */
+  .crew-cats { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .crew-cat-btn { font-family:var(--mono); font-size:10px; font-weight:600; padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid var(--border); background:var(--bg2); color:var(--text-dim); transition:all .2s; white-space:nowrap; }
+  .crew-cat-btn.active { border-color:var(--accent); color:#fff; background:var(--navy); }
+  .crew-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:6px; cursor:pointer; transition:all .15s; }
+  .crew-card:active { background:var(--bg3); border-color:var(--accent); }
+  .crew-fr { font-size:13px; color:var(--text-dim); margin-bottom:4px; }
+  .crew-en { font-family:var(--mono); font-size:15px; font-weight:600; color:var(--text-bright); letter-spacing:.5px; }
+  .crew-ctx { font-size:10px; color:var(--text-dim); margin-top:4px; font-style:italic; }
+  .crew-copied { font-family:var(--mono); font-size:9px; color:var(--accent3); float:right; }
+
+  @media(max-width:768px){
+    .crew-cat-btn { padding:10px 14px; font-size:11px; min-height:42px; }
+    .crew-en { font-size:14px; }
+    .crew-card { padding:14px; }
+  }
+
+  /* ── CODES DL TAB ── */
+  .codes-wrap { max-width:960px; margin:0 auto; }
+  .codes-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .codes-search-wrap { flex:1; min-width:220px; position:relative; display:flex; align-items:center; }
+  .codes-search-icon { position:absolute; left:10px; font-size:13px; pointer-events:none; }
+  .codes-search { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:var(--mono); font-size:12px; padding:8px 32px 8px 30px; outline:none; }
+  .codes-search:focus { border-color:var(--accent); }
+  .codes-clear-btn { position:absolute; right:8px; background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:12px; padding:2px 4px; }
+  .codes-clear-btn:hover { color:var(--red); }
+  .codes-filter-btns { display:flex; gap:4px; }
+  .codes-filter { font-family:var(--mono); font-size:10px; font-weight:700; padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid var(--border); background:var(--bg2); color:var(--text-dim); transition:all .2s; letter-spacing:1px; }
+  .codes-filter.active, .codes-filter:hover { border-color:var(--accent); color:var(--accent); background:var(--bg2); }
+  .codes-filter.ezy.active { border-color:#ea580c; color:#ea580c; background:rgba(234,88,12,.06); }
+  .codes-filter.vly.active { border-color:#ca8a04; color:#ca8a04; background:rgba(202,138,4,.06); }
+  .btn-add-code { font-family:var(--mono); font-size:11px; padding:7px 14px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid rgba(16,185,129,.2); background:rgba(16,185,129,.04); color:var(--accent3); transition:all .2s; white-space:nowrap; }
+  .btn-add-code:hover { background:rgba(16,185,129,.1); border-color:var(--accent3); }
+
+  /* Result cards */
+  #codes-results { display:flex; flex-direction:column; gap:8px; }
+  .code-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 16px; display:flex; align-items:center; gap:14px; transition:all .2s; }
+  .code-card:hover { border-color:var(--border); background:var(--bg3); }
+  .code-badge { font-family:var(--mono); font-size:20px; font-weight:700; min-width:52px; text-align:center; padding:6px 8px; border-radius:var(--radius-sm); line-height:1; }
+  .code-badge.ezy { background:rgba(234,88,12,.08); color:#c2410c; border:1px solid rgba(234,88,12,.2); }
+  .code-badge.vly { background:rgba(202,138,4,.06); color:#a16207; border:1px solid rgba(202,138,4,.2); }
+  .code-badge.both { background:var(--bg2); color:var(--accent); border:1px solid var(--accent); }
+  .code-info { flex:1; }
+  .code-desc { font-family:var(--sans); font-size:13px; font-weight:600; color:var(--text-bright); margin-bottom:3px; }
+  .code-keywords { font-family:var(--mono); font-size:10px; color:var(--text-dim); }
+  .code-keywords span { background:var(--bg3); border:1px solid var(--border); border-radius:2px; padding:1px 5px; margin-right:3px; display:inline-block; }
+  .code-notes { font-size:10px; color:var(--text-dim); margin-top:3px; font-style:italic; }
+  .code-companies { display:flex; flex-direction:column; gap:3px; align-items:flex-end; }
+  .co-tag { font-family:var(--mono); font-size:9px; font-weight:700; padding:2px 6px; border-radius:2px; }
+  .co-tag.ezy { background:rgba(234,88,12,.1); color:#ea580c; }
+  .co-tag.vly { background:rgba(202,138,4,.08); color:#ca8a04; }
+  .code-del-btn { background:none; border:none; color:var(--border); cursor:pointer; font-size:13px; padding:4px; border-radius:3px; transition:all .2s; }
+  .code-del-btn:hover { color:var(--red); background:rgba(255,64,87,.1); }
+
+  /* Highlight match */
+  .hl { background:var(--navy-light); color:var(--accent); border-radius:2px; padding:0 2px; }
+
+  /* Modal */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:100; }
+  .modal-overlay.open { display:block; }
+  .modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:0; z-index:101; width:440px; max-width:95vw; box-shadow:0 20px 60px rgba(0,0,0,.12); }
+  .modal.open { display:block; }
+  .modal-head { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); background:var(--navy); font-family:var(--cond); font-size:14px; font-weight:700; letter-spacing:2px; color:#fff; }
+  .modal-body { padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+  .modal-field { display:flex; flex-direction:column; gap:4px; }
+  .modal-field label { font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; }
+  .modal-field input[type="text"] { width:100%; font-size:12px; padding:7px 10px; text-align:left; }
+  .modal-check { display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:12px; color:var(--text); cursor:pointer; }
+  .modal-footer { display:flex; gap:8px; justify-content:flex-end; padding:12px 18px; border-top:1px solid var(--border); }
+  .codes-placeholder { text-align:center; padding:50px 20px; font-family:var(--mono); font-size:12px; color:var(--text-dim); line-height:1.8; }
+  .tr-hidden { display:none !important; }
+  .phrase-item { display:flex; gap:10px; padding:10px 12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-sm); align-items:flex-start; cursor:pointer; transition:all .15s; }
+  .phrase-item:active { background:var(--bg3); border-color:var(--accent); }
+  .phrase-fr { flex:1; font-size:12px; color:var(--text-dim); }
+  .phrase-en { flex:1; font-size:12px; color:var(--text-bright); font-weight:600; }
+  .phrase-cat { font-family:var(--mono); font-size:8px; color:var(--accent2); background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.15); border-radius:3px; padding:1px 6px; white-space:nowrap; align-self:center; }
+  /* Chart */
+  .chart-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:16px; box-shadow:var(--shadow-sm); }
+  .chart-canvas { width:100%; height:200px; }
+
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-title">✈ Calculateur <span>DL</span> – Rotation</div>
+</header>
+<div class="ticker"><span style="font-size:14px;font-weight:700;color:var(--accent);letter-spacing:2px" id="zuluVal">--:--Z</span> &nbsp;·&nbsp; LOCAL: <span id="clockVal">--:--:--</span> &nbsp;·&nbsp; <span id="sessionInfo">--</span></div>
+
+<!-- LIVE WIDGET -->
+<div class="live-widget" id="live-widget">
+  <div class="lw-row">
+    <span class="lw-vol" id="lw-vol">---</span>
+    <button class="btn-fr24 lw-fr24" onclick="openFR24()" title="FlightRadar24">📡</button>
+    <div class="lw-sep"></div>
+    <div>
+      <div class="lw-label">CHRONO ROTATION</div>
+      <div class="lw-chrono" id="lw-chrono">00:00</div>
+    </div>
+    <div class="lw-sep"></div>
+    <div style="flex:1;min-width:80px">
+      <div class="lw-label">TTM <span id="lw-ttm-txt">--</span> min</div>
+      <div class="lw-ttm-bar"><div class="lw-ttm-fill" id="lw-ttm-fill" style="width:0%"></div></div>
+    </div>
+    <div class="lw-sep"></div>
+    <div>
+      <div class="lw-label">PTD</div>
+      <div class="lw-ptd" id="lw-ptd">--:--</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" style="max-width:960px;margin:0 auto 0;">
+  <button class="tab-btn active" onclick="switchTab('calc')">⚙️ <span class="tab-label">Calcul</span></button>
+  <button class="tab-btn" onclick="switchTab('timecalc')">🕐 <span class="tab-label">Temps</span></button>
+  <button class="tab-btn" onclick="switchTab('notes')">📝 <span class="tab-label">Notes</span></button>
+  <button class="tab-btn" onclick="switchTab('history')">🗄️ <span class="tab-label">Hist.</span></button>
+</div>
+
+<!-- ══ TAB: CALCULATEUR ══ -->
+<div class="tab-content active" id="tab-calc">
+
+  <!-- FEUILLES DE VOL -->
+  <div id="sheets-bar"></div>
+
+  <!-- QUICK CONTACTS -->
+  <div style="display:flex;gap:4px;max-width:960px;margin:0 auto 4px;align-items:center">
+    <button class="preset-btn fw" id="btn-fw" onclick="toggleFirstwave()" style="font-size:11px;padding:6px 10px">🌅 First</button>
+    <button class="preset-btn fw" id="btn-lw" onclick="toggleLastwave()" style="font-size:11px;padding:6px 10px">🌙 Last</button>
+    <button class="preset-btn" id="btn-theme" onclick="toggleTheme()" style="font-size:13px;padding:6px 10px;margin-left:auto" title="Mode jour/nuit">🌙</button>
+    <button class="btn-reset" onclick="resetAll()" style="font-size:10px;padding:6px 12px">↺ Nouveau</button>
+  </div>
+
+  <!-- PRESET BUTTONS -->
+  <div class="presets-bar">
+    <span class="presets-label">COMPAGNIE</span>
+    <button class="preset-btn ezy" id="preset-ezy" onclick="setPreset('ezy')">EZY</button>
+    <button class="preset-btn vly" id="preset-vly" onclick="setPreset('vly')">VLY</button>
+    <div class="preset-divider"></div>
+    <button class="preset-btn crew" id="btn-crew" onclick="toggleCrew()">👨‍✈️ Crew</button>
+  </div>
+
+  <!-- AIRCRAFT TYPE -->
+  <div class="presets-bar" id="actype-bar" style="display:none">
+    <span class="presets-label">TYPE</span>
+    <div id="actype-buttons" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+
+<div class="main-grid">
+
+  <!-- PARAMS -->
+  <div class="panel params-panel">
+    <div class="panel-head" onclick="togglePanel(this)"><span class="icon">⚙️</span><span class="title">Params</span><span class="collapse-arrow">▼</span></div>
+    <div class="panel-body" style="padding:6px 8px">
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;flex:1"><span style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">VOL</span><input type="text" id="vol-num" class="vol-input" placeholder="EJU1234" style="width:100%;text-align:center" oninput="autoSave()"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;flex:0.6"><span style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">DATE</span><input type="text" id="vol-date" class="vol-input" placeholder="19/03" style="width:100%;text-align:center" oninput="autoSave()"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;flex:1"><span style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">IMMAT</span><div style="display:flex;gap:4px;align-items:center;width:100%"><input type="text" id="vol-immat" class="vol-input" placeholder="OE-IVE" style="flex:1;text-transform:uppercase;text-align:center" maxlength="7" oninput="formatImmat(this);autoSave()"><button class="btn-fr24" id="btn-fr24" onclick="openFR24()" title="FR24" style="font-size:12px;padding:3px 6px">📡</button></div></div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;flex:1"><span style="font-family:var(--mono);font-size:8px;font-weight:700;color:var(--accent)">TTM</span><input type="number" id="ttm" min="0" max="180" placeholder="--" style="width:100%" oninput="calcAll()"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;flex:1"><span style="font-family:var(--mono);font-size:8px;font-weight:700;color:var(--accent)">MARGE</span><input type="number" id="marge" min="0" max="30" placeholder="--" style="width:100%" oninput="calcAll()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARRIVÉE + DÉPART côte à côte -->
+  <div class="panel" style="grid-column:1/-1">
+    <div class="panel-head" onclick="togglePanel(this)"><span class="icon">✈️</span><span class="title">Horaires</span><span class="collapse-arrow">▼</span></div>
+    <div class="panel-body" style="padding:6px 8px">
+      <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0">
+        <!-- ARR -->
+        <div id="panel-arr" style="padding-right:8px">
+          <div style="font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;text-align:center">🛬 ARRIVÉE</div>
+          <div id="arr-fields">
+            <div class="field"><span class="field-sigle">STA</span><input type="text" id="sta" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+            <div class="field"><span class="field-sigle">ATA</span><input type="text" id="ata" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+            <div class="field"><span class="field-sigle">ADO</span><input type="text" id="ado" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+            <div id="ado-note" style="display:none;font-family:var(--mono);font-size:8px;color:var(--accent3);margin-bottom:4px;margin-left:42px">✓ dans la norme</div>
+          </div>
+          <div class="field" id="field-ctot" style="margin-top:8px;margin-bottom:6px;padding:6px 8px;background:rgba(232,137,12,.07);border:1.5px dashed var(--accent2);border-radius:var(--radius-sm)">
+            <span class="field-sigle" style="color:var(--accent2)">CTOT</span>
+            <input type="text" id="ctot" placeholder="--:--" maxlength="5" inputmode="numeric">
+          </div>
+          <div class="field computed-field" id="field-ttm-prevu" style="display:none"><span class="field-sigle" style="color:var(--accent2)">TTM</span><span class="computed-value" id="ttm-prevu-display">--</span></div>
+        </div>
+        <!-- Divider -->
+        <div style="background:var(--border)"></div>
+        <!-- DEP -->
+        <div id="panel-dep" style="padding-left:8px">
+          <div style="font-family:var(--cond);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px;text-align:center">🛫 DÉPART</div>
+          <div class="field"><span class="field-sigle">STD</span><input type="text" id="std" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+          <div class="field computed-field" id="field-ptd" style="display:none"><span class="field-sigle" style="color:var(--accent2)">PTD</span><span class="computed-value" id="ptd-display">--:--</span></div>
+          <div class="field"><span class="field-sigle">ADCT</span><input type="text" id="adct" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+          <div class="field computed-field" id="field-adct-calc" style="display:none"><span class="field-sigle" style="color:var(--accent2)">ADCT</span><span class="computed-value" id="adct-calc-display">--:--</span></div>
+          <div class="field"><span class="field-sigle">ADC</span><input type="text" id="adc" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+          <div class="field"><span class="field-sigle">ATD</span><input type="text" id="atd" placeholder="--:--" maxlength="5" inputmode="numeric"></div>
+        </div>
+      </div>
+      <!-- TIMELINE STD (jalons fixes) -->
+      <div id="std-timeline" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ANALYSE (Résultats + Décomposition fusionnés) -->
+  <div class="panel results-panel">
+    <div class="panel-head" onclick="togglePanel(this)">
+      <span class="icon">📊</span><span class="title">Analyse retard</span>
+      <span class="collapse-arrow" style="margin-left:auto">▼</span>
+      <button class="btn-copy" onclick="event.stopPropagation();openQuickSearch()" style="font-size:9px;padding:4px 10px;margin-left:8px">🔍 Code DL</button>
+    </div>
+    <div class="panel-body">
+      <!-- Synthèse en bandeau -->
+      <div class="synth-bar">
+        <div class="synth-item"><span class="synth-lbl">ARR</span><span class="synth-val na" id="res-arr">--</span></div>
+        <div class="synth-sep"></div>
+        <div class="synth-item"><span class="synth-lbl">PORTE</span><span class="synth-val na" id="res-porte">--:--</span></div>
+        <div class="synth-sep"></div>
+        <div class="synth-item synth-main"><span class="synth-lbl">DÉPART</span><span class="synth-val na" id="res-dep">--</span></div>
+        <div class="synth-sep"></div>
+        <div class="synth-item"><span class="synth-lbl">CTOT</span><span class="synth-val na" id="res-ctot">--</span></div>
+      </div>
+      <div class="synth-notes">
+        <span id="note-arr"></span><span id="note-porte"></span><span id="note-dep"></span><span id="note-ctot"></span>
+      </div>
+
+      <!-- Décomposition -->
+      <div class="decomp-title">RÉPARTITION DU RETARD DÉPART</div>
+      <div class="decomp-bars">
+        <div class="decomp-row"><div class="dr-label">🔄 Répercussion entrant</div><div class="dr-bar-wrap"><div class="dr-bar rep" id="bar-rep" style="width:0%"></div></div><div class="dr-val" id="val-rep" style="color:var(--c-rep)">--</div></div>
+        <div class="decomp-row"><div class="dr-label">🛞 Clearance roulage</div><div class="dr-bar-wrap"><div class="dr-bar" id="bar-clearance" style="width:0%;background:linear-gradient(90deg,#f06ec8,#f99adb)"></div></div><div class="dr-val" id="val-clearance" style="color:var(--c-clear)">--</div></div>
+        <div class="decomp-row"><div class="dr-label">🕐 CTOT – Slot</div><div class="dr-bar-wrap"><div class="dr-bar ctot" id="bar-ctot" style="width:0%"></div></div><div class="dr-val" id="val-ctot" style="color:var(--c-ctot)">--</div></div>
+        <div class="decomp-row"><div class="dr-label" style="color:var(--red);font-weight:700">⚙️ Dépassement rotation</div><div class="dr-bar-wrap"><div class="dr-bar dep" id="bar-dep2" style="width:0%;background:linear-gradient(90deg,#ff5a6e,#ff8a98)"></div></div><div class="dr-val" id="val-dep2" style="color:var(--red)">--</div></div>
+      </div>
+      <!-- BILAN -->
+      <div class="justify-box" id="justify-box">
+        <span class="justify-text" id="justify-text">Renseignez les horaires</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="btns-row">
+  <span class="save-flash" id="save-flash">✓ Sauvegardé</span>
+  <button class="btn-save" onclick="saveToHistory()">💾 Enregistrer</button>
+  <button class="btn-reset" onclick="resetAll()">↺ Nouveau</button>
+</div>
+</div><!-- end tab-calc -->
+
+<div class="tab-content" id="tab-timecalc">
+<div class="tc-wrap">
+  <!-- Display -->
+  <div class="tc-display">
+    <div class="tc-history-line" id="tc-expr"></div>
+    <div class="tc-main-val" id="tc-display">0:00</div>
+  </div>
+  <!-- History -->
+  <div class="tc-history" id="tc-history"></div>
+  <!-- Keypad -->
+  <div class="tc-keypad">
+    <button class="tc-key tc-fn" onclick="tcAC()">AC</button>
+    <button class="tc-key tc-fn" onclick="tcClear()">C</button>
+    <button class="tc-key tc-fn" onclick="tcBackspace()">⌫</button>
+    <button class="tc-key tc-op" onclick="tcOp('/')">÷</button>
+    <button class="tc-key" onclick="tcDigit('7')">7</button>
+    <button class="tc-key" onclick="tcDigit('8')">8</button>
+    <button class="tc-key" onclick="tcDigit('9')">9</button>
+    <button class="tc-key tc-op" onclick="tcOp('*')">×</button>
+    <button class="tc-key" onclick="tcDigit('4')">4</button>
+    <button class="tc-key" onclick="tcDigit('5')">5</button>
+    <button class="tc-key" onclick="tcDigit('6')">6</button>
+    <button class="tc-key tc-op tc-minus" onclick="tcOp('-')">−</button>
+    <button class="tc-key" onclick="tcDigit('1')">1</button>
+    <button class="tc-key" onclick="tcDigit('2')">2</button>
+    <button class="tc-key" onclick="tcDigit('3')">3</button>
+    <button class="tc-key tc-op tc-plus" onclick="tcOp('+')">+</button>
+    <button class="tc-key" onclick="tcDigit('0')">0</button>
+    <button class="tc-key" onclick="tcDigit('00')">00</button>
+    <button class="tc-key tc-now" onclick="tcNow()">NOW</button>
+    <button class="tc-key tc-eq" onclick="tcEquals()">=</button>
+  </div>
+</div>
+</div><!-- end tab-timecalc -->
+
+<!-- ══ TAB: NOTES ══ -->
+<div class="tab-content" id="tab-notes">
+<div style="max-width:960px;margin:0 auto">
+  <div class="panel">
+    <div class="panel-head" style="cursor:default">
+      <span class="icon">📝</span><span class="title">Notes vol</span>
+      <span id="notes-vol-tag" style="margin-left:8px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent)"></span>
+      <button class="btn-copy" onclick="insertNoteTime()" style="font-size:9px;padding:4px 10px;margin-left:auto">🕐 Heure</button>
+      <button class="btn-reset" onclick="clearNotes()" style="font-size:9px;padding:4px 10px">🗑</button>
+    </div>
+    <div class="panel-body" style="padding:8px">
+      <textarea id="notes-area" placeholder="Notes libres pendant la rotation…&#10;Astuce : le bouton 🕐 insère l'heure courante." oninput="saveNotes()" style="width:100%;min-height:55vh;background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-bright);font-family:var(--mono);font-size:13px;line-height:1.5;padding:10px;outline:none;resize:vertical;text-align:left;letter-spacing:0"></textarea>
+      <div style="display:flex;justify-content:space-between;margin-top:4px;font-family:var(--mono);font-size:9px;color:var(--text-dim)"><span>Sauvegarde auto · liée à la feuille</span><span id="notes-count"></span></div>
+    </div>
+  </div>
+</div>
+</div><!-- end tab-notes -->
+
+<!-- ══ TAB: HISTORIQUE ══ -->
+<div class="tab-content" id="tab-history">
+<div class="history-wrap">
+  <div class="history-toolbar">
+    <input type="text" class="history-search" id="hist-search" placeholder="🔍  Rechercher vol, date, cause…" oninput="renderHistory()">
+    <div class="hist-sort-btns">
+      <button class="sort-btn active" id="sort-date" onclick="sortHistory('date')">Date ↕</button>
+      <button class="sort-btn" id="sort-vol" onclick="sortHistory('vol')">Vol ↕</button>
+      <button class="sort-btn" id="sort-dep" onclick="sortHistory('dep')">DL Départ ↕</button>
+    </div>
+    <span class="history-count" id="hist-count">0 rotation(s)</span>
+  </div>
+  <div class="hist-actions-bar">
+    <button class="btn-export" onclick="exportData()">📤 Exporter</button>
+    <button class="btn-export" onclick="document.getElementById('import-file').click()" style="border-color:rgba(0,232,122,.3);color:var(--accent3)">📥 Importer</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="btn-clear-all" onclick="clearHistory()">🗑 Tout effacer</button>
+  </div>
+  <div id="hist-cards"></div>
+  <div class="empty-state" id="hist-empty">
+    <div style="font-size:32px;margin-bottom:12px">✈</div>
+    Aucune rotation enregistrée.<br>
+    <span style="font-size:10px;margin-top:6px;display:block">Calculez un vol et cliquez sur "Enregistrer dans l'historique"</span>
+  </div>
+</div>
+</div><!-- end tab-history -->
+
+
+
+<!-- ══ QUICK SEARCH OVERLAY (codes DL from calc) ══ -->
+<div class="quick-search-overlay" id="qs-overlay" onclick="closeQuickSearch()"></div>
+<div class="quick-search-panel" id="qs-panel">
+  <div class="qs-header">
+    <input type="text" class="qs-input" id="qs-input" placeholder="Rechercher un code DL…" oninput="quickSearchCodes()">
+    <button class="qs-close" onclick="closeQuickSearch()">✕</button>
+  </div>
+  <div class="qs-results" id="qs-results"></div>
+</div>
+
+<script>
+// ── STORAGE KEYS ──────────────────────────────────────────────────────
+const KEY_CURRENT = 'dl_current';
+
+// ── MULTI-FEUILLES (suivi de plusieurs vols) ─────────────────────────
+const KEY_SHEETS='dl_sheets';
+let sheets=[]; let activeSheetId=null;
+
+function sheetKey(id){ return 'dl_current_'+id; }
+function currentKey(){ return activeSheetId?sheetKey(activeSheetId):KEY_CURRENT; }
+
+function loadSheets(){
+  try{
+    const s=localStorage.getItem(KEY_SHEETS);
+    if(s){ const d=JSON.parse(s); sheets=d.sheets||[]; activeSheetId=d.active||null; }
+  }catch(e){}
+  if(!sheets.length){ sheets=[{id:Date.now()}]; activeSheetId=sheets[0].id; saveSheets(); }
+  if(!sheets.find(x=>x.id===activeSheetId)){ activeSheetId=sheets[0].id; saveSheets(); }
+  // Migration : ancienne clé unique → première feuille
+  try{
+    const old=localStorage.getItem(KEY_CURRENT);
+    if(old && !localStorage.getItem(sheetKey(activeSheetId))){
+      localStorage.setItem(sheetKey(activeSheetId), old);
+      localStorage.removeItem(KEY_CURRENT);
+    }
+  }catch(e){}
+}
+function saveSheets(){ try{localStorage.setItem(KEY_SHEETS,JSON.stringify({sheets,active:activeSheetId}));}catch(e){} }
+
+function sheetLabel(s,i){
+  if(s.id===activeSheetId){
+    const v=document.getElementById('vol-num').value.trim();
+    return v||('Vol '+(i+1));
+  }
+  try{
+    const raw=localStorage.getItem(sheetKey(s.id));
+    if(raw){ const d=JSON.parse(raw); if(d.volNum&&d.volNum.trim()) return d.volNum.trim(); }
+  }catch(e){}
+  return 'Vol '+(i+1);
+}
+
+function renderSheetsBar(){
+  const bar=document.getElementById('sheets-bar');
+  if(!bar) return;
+  bar.innerHTML=sheets.map((s,i)=>{
+    const act=s.id===activeSheetId;
+    return `<div class="sheet-chip ${act?'active':''}" onclick="switchSheet(${s.id})">
+      <span>✈ ${sheetLabel(s,i)}</span>
+      ${sheets.length>1?`<span class="sheet-x" onclick="closeSheet(${s.id},event)">✕</span>`:''}
+    </div>`;
+  }).join('')+`<button class="sheet-add" onclick="addSheet()" title="Nouvelle feuille">＋</button>`;
+}
+
+async function switchSheet(id){
+  if(id===activeSheetId) return;
+  await autoSave();
+  activeSheetId=id; saveSheets();
+  clearSheetUI(); lastCalc={};
+  await restoreCurrent();
+  calcAll();
+  renderSheetsBar();
+  refreshNotesUI();
+}
+
+async function addSheet(){
+  await autoSave();
+  const id=Date.now();
+  sheets.push({id});
+  activeSheetId=id; saveSheets();
+  clearSheetUI(); lastCalc={};
+  calcAll();
+  renderSheetsBar();
+  refreshNotesUI();
+  showToast('✈ Nouvelle feuille');
+}
+
+function closeSheet(id,ev){
+  if(ev) ev.stopPropagation();
+  if(sheets.length<=1){ showToast('Dernière feuille — impossible de fermer'); return; }
+  if(!confirm('Fermer cette feuille de vol ?')) return;
+  try{localStorage.removeItem(sheetKey(id));}catch(e){}
+  try{localStorage.removeItem('dl_notes_'+id);}catch(e){}
+  const idx=sheets.findIndex(x=>x.id===id);
+  sheets=sheets.filter(x=>x.id!==id);
+  if(id===activeSheetId){
+    activeSheetId=sheets[Math.max(0,idx-1)].id;
+    saveSheets();
+    clearSheetUI(); lastCalc={};
+    restoreCurrent().then(()=>{calcAll();renderSheetsBar();refreshNotesUI();});
+  } else {
+    saveSheets();
+    renderSheetsBar();
+  }
+}
+const KEY_HISTORY = 'dl_history';
+const KEY_SORT    = 'dl_sort';
+
+// ── STORAGE LAYER (localStorage for phone/offline use) ───────────────
+// Wraps localStorage to mimic window.storage API so all existing code works
+window.storage = {
+  async get(key) {
+    const val = localStorage.getItem(key);
+    if (val === null) return null;
+    return { key, value: val };
+  },
+  async set(key, value) {
+    localStorage.setItem(key, value);
+    return { key, value };
+  },
+  async delete(key) {
+    localStorage.removeItem(key);
+    return { key, deleted: true };
+  }
+};
+
+// ── CLOCK ─────────────────────────────────────────────────────────────
+function updateClock() {
+  const n = new Date();
+  document.getElementById('clockVal').textContent =
+    p2(n.getHours())+':'+p2(n.getMinutes())+':'+p2(n.getSeconds());
+  document.getElementById('zuluVal').textContent =
+    p2(n.getUTCHours())+':'+p2(n.getUTCMinutes())+'Z';
+}
+setInterval(updateClock,1000); updateClock();
+function p2(v){ return String(v).padStart(2,'0'); }
+
+// ── TABS ──────────────────────────────────────────────────────────────
+function switchTab(name) {
+  const tabs=['calc','timecalc','notes','history'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active', tabs[i]===name));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active', c.id==='tab-'+name));
+  if(name==='history') renderHistory();
+  if(name==='notes') refreshNotesUI();
+  window.scrollTo({top:0,behavior:'smooth'});
+  currentTab=name;
+}
+
+// ── CODES DL ──────────────────────────────────────────────────────────
+const KEY_CODES = 'dl_codes';
+let codesFilter = 'all';
+let editingCodeId = null;
+
+// Complete EasyJet GHM + Vueling GOM Annex E delay codes – Bilingual FR/EN
+const DEFAULT_CODES = [
+// ═══ EASYJET GHM ═══
+{id:1,code:'00',desc:'Self Manoeuvring Departure / Départ en manœuvre autonome',keywords:['self manoeuvring','auto-manoeuvre','headset','ceo','neo','démarrage autonome','pushback autonome'],companies:['ezy'],notes:'Max 3 min CEO / 6 min NEO. Au-delà → autre code.'},
+{id:2,code:'01',desc:'Baggage System Failure / Panne système bagages',keywords:['baggage system','système bagage','panne tapis','convoyeur','conveyor failure','bag system'],companies:['ezy'],notes:'Si manque de staff → 18.'},
+{id:3,code:'02',desc:'Tech defect in Tech Log (max 10 min) + System Resets',keywords:['tech log','mel','system reset','réinitialisation','qrh','fcom','défaut technique','reset système','existing defect'],companies:['ezy'],notes:'Si ingénieur requis → 43. Si nouveau défaut → 41.'},
+{id:4,code:'03',desc:'Late Release of Passengers for Boarding / Libération tardive pax',keywords:['late release','green light boarding','glb','std-25','passager non disponible','cabin security check','libération tardive'],companies:['ezy'],notes:'Si coaching → 19. Si gate layout → 87.'},
+{id:5,code:'04',desc:'Special Assistance / PRM',keywords:['prm','pmr','special assistance','mobilité réduite','wheelchair','fauteuil','ambulift','ema','electric mobility','handicap','disabled'],companies:['ezy'],notes:'Embarquement/débarquement lent ou volume élevé de PRMs.'},
+{id:6,code:'05',desc:'Offload pax/baggage at gate / Déchargement pax à la porte',keywords:['offload','déchargement passager','gate closure','fermeture porte','pax absent','no show','disruptive airport','missing pax'],companies:['ezy'],notes:'Si déjà à bord → 08. Si poids → 62. Cabin bags: gate→15, cabin→66, volume→10.'},
+{id:7,code:'06',desc:'Flight Crew Training / Formation équipage technique',keywords:['flight crew training','formation pilote','training pnt','formation équipage'],companies:['ezy'],notes:''},
+{id:8,code:'07',desc:'Cabin Crew Training / Formation PNC',keywords:['cabin crew training','formation pnc','training pnc','formation hôtesse'],companies:['ezy'],notes:''},
+{id:9,code:'08',desc:'Disruptive Passenger(s) / Passager(s) perturbateur(s)',keywords:['disruptive','passager perturbateur','ill passenger','malade','medical','police','unruly','sick passenger','offload cabin','comportement'],companies:['ezy'],notes:'Malade, refus de voyager, offloaded par crew, police à l\'arrivée.'},
+{id:10,code:'09',desc:'Scheduled ground time < declared minimum / Rotation courte',keywords:['ground time','minimum ground time','rotation courte','turnaround court','schedule less','temps sol'],companies:['ezy'],notes:'Si décision OCC → 96.'},
+{id:11,code:'10',desc:'Offload bags cabin to hold / Bagages cabine vers soute',keywords:['cabin to hold','offload bags cabin','hand baggage policy','bagage cabine soute','excess cabin bags','sac cabine'],companies:['ezy'],notes:'Gate enforcement → 15. Cabin management → 66.'},
+{id:12,code:'11',desc:'Late Check-in – acceptance after deadline / Enregistrement tardif',keywords:['check-in','enregistrement','late check-in','retard enregistrement','deadline','acceptance tardive','pax late','comptoir'],companies:['ezy','vly'],notes:'EZY: check-in maintenu ouvert. VLY: except if authorized by Vueling.'},
+{id:13,code:'12',desc:'Late Check-in – congestion / Congestion zone check-in',keywords:['congestion','check-in staff','file attente','queue','manque personnel','slow processing','handling agent','new staff'],companies:['ezy','vly'],notes:'EZY: si système → 55, bagage → 18/01. VLY: a) Lack staff b) Queue counter.'},
+{id:14,code:'13',desc:'Check-in Error / Erreur d\'enregistrement pax/bagage',keywords:['check-in error','erreur enregistrement','duplicate boarding card','wrong figures','incorrect processing','baggage tags','plâtre'],companies:['ezy','vly'],notes:''},
+{id:15,code:'14',desc:'Oversales – booking errors / Surbooking',keywords:['oversales','overbooking','surbooking','booking error','duplicate seat','erreur réservation','denied boarding','offloading'],companies:['ezy','vly'],notes:'EZY: equipment change → 96. VLY: sub charter less capacity.'},
+{id:16,code:'15',desc:'Boarding – discrepancies, paging / Embarquement, discordances',keywords:['boarding','embarquement','discrepancy','paging','appel','headcount','comptage','hand baggage gate','slow boarding','wrong aircraft','missing pax','discordance','passport','visa','gate staff'],companies:['ezy','vly'],notes:'EZY: late coach → 19, late boarding → 03, cabin → 66, volume → 10. VLY: after departure call.'},
+{id:17,code:'16',desc:'Commercial / Passenger Convenience – VIP, INADs, deportees',keywords:['commercial','lost property','objet perdu','vip','press','filming','inad','inadmissible','deportee','expulsé','convenience','illness','maladie','death','infant','elderly','ancillaries'],companies:['ezy','vly'],notes:'VLY: disruptive → 85.'},
+{id:18,code:'17',desc:'Crew Food (EZY) / Catering Order (VLY)',keywords:['crew food','repas équipage','crew meal','catering order','commande catering','up catering','incorrect order'],companies:['ezy','vly'],notes:'EZY: late crew food. VLY: late/incorrect order to supplier (crew meals → 65).'},
+{id:19,code:'18',desc:'Baggage Processing / Traitement bagages',keywords:['baggage processing','traitement bagage','sorting','tri','bingo sheets','trailer','missing bag','extra bag','bagage manquant','trolley','sorting area'],companies:['ezy','vly'],notes:'EZY: system failure due staff. Not staff → 01. VLY: sorting inop → 87.'},
+{id:20,code:'19',desc:'Coaching pax/crew (EZY) / Late PMR Assistance (VLY)',keywords:['coaching','bus','navette','coach','transport pax','crew coach','late coach','pmr','prm','mobilité réduite','wheelchair','ambulift','psm','wch','assistance'],companies:['ezy','vly'],notes:'EZY: bus pax/crew. VLY: late PMR assistance, include WCH type.'},
+{id:100,code:'21',desc:'Cargo Documentation',keywords:['cargo doc','documentation fret','awb','incorrect cargo'],companies:['vly'],notes:''},
+{id:101,code:'22',desc:'Late Positioning – cargo',keywords:['cargo late','fret retard','positionnement','delivery cargo'],companies:['vly'],notes:''},
+{id:102,code:'23',desc:'Late Acceptance – cargo after deadline',keywords:['cargo acceptance','acceptation fret','late cargo'],companies:['vly'],notes:''},
+{id:103,code:'24',desc:'Inadequate Packing – repackaging/re-labelling',keywords:['packing','emballage','repackaging','re-labelling','étiquetage'],companies:['vly'],notes:''},
+{id:104,code:'25',desc:'Oversales cargo – excess sealable load',keywords:['oversales cargo','excès charge','surcharge fret'],companies:['vly'],notes:''},
+{id:105,code:'26',desc:'Load/Unload – lack staff/equipment cargo',keywords:['load unload cargo','manque personnel cargo'],companies:['vly'],notes:''},
+{id:106,code:'27',desc:'Documentation, Packing (Mail only)',keywords:['mail doc','courrier','poste'],companies:['vly'],notes:''},
+{id:107,code:'28',desc:'Late Positioning (Mail only)',keywords:['mail late','courrier retard'],companies:['vly'],notes:''},
+{id:108,code:'29',desc:'Late Acceptance (Mail only)',keywords:['mail acceptance','courrier tardif'],companies:['vly'],notes:''},
+{id:21,code:'31',desc:'Aircraft Documentation Late/Inaccurate / Documentation avion',keywords:['documentation','loadsheet','centrage','weight balance','w&b','gendec','manifest','dispatcher','load reconciliation','loading form','papiers avion','coordinateur','loading instruction'],companies:['ezy','vly'],notes:'EZY: late check-in → 11/12, flight plan → 61, system → 55, non-tech → 96, tech → 46.'},
+{id:22,code:'32',desc:'Loading/Unloading – bulky, special load / Chargement/Déchargement',keywords:['loading','unloading','chargement','déchargement','loaders','slow loading','ramp crew','outbound bags','loading staff','special load','bulky','encombrant','load master'],companies:['ezy','vly'],notes:'EZY: baggage system → 18/01. Lack of staff → 32.'},
+{id:23,code:'33',desc:'Loading Equipment – lack/breakdown / Équipement chargement',keywords:['loading equipment','belt loader','dolley','flatbed','panne équipement','loader','gse','matériel sol','tapis bagage'],companies:['ezy','vly'],notes:'EZY: lack of staff → 32.'},
+{id:24,code:'34',desc:'Servicing Equipment – lack/breakdown/staff / Passerelle, Pushback, GPU',keywords:['servicing','steps','escalier','airbridge','passerelle','pushback','tug','tracteur','gpu','headset','toilet','water','pigs','cones','pathing','remorquage','tow','de-icing rig','acu','bus passager','heating','cooling','climatisation','crew pick up'],companies:['ezy','vly'],notes:'EZY: headset >60s → 34. Tow ready STD-60 → 89. VLY: a) Water b) Toilet c) Staff d) ACU e) Buses f) GPU g) Steps h) Crew pick up.'},
+{id:25,code:'35',desc:'Aircraft Cleaning / Nettoyage avion',keywords:['cleaning','nettoyage','gash','cabin clean','nettoyage cabine','propreté','windscreen','seat cover','soiled','third party','nettoyage exceptionnel','extraordinary'],companies:['ezy','vly'],notes:'EZY: extended by crew → 66. VLY: a-b) Water/toilet by cleaning staff c) Lack staff d) Extraordinary.'},
+{id:26,code:'36',desc:'Fuelling/Defuelling – fuel supplier / Avitaillement',keywords:['fuel','avitaillement','fuelling','defuelling','dépotage','fuel truck','kérosène','carburant','bowser','fueller late','incorrect fuel','wrong fuel figures'],companies:['ezy','vly'],notes:'EZY: fueller on time but uplift → 62. Dest/load change → 96. VLY: extra fuel after initial → 62.'},
+{id:27,code:'37',desc:'Catering – late delivery or loading / Catering passagers',keywords:['catering','plateau repas','galley','trolley','chariot','catering loading','passenger catering','livraison catering','commissariat','return catering'],companies:['ezy','vly'],notes:'EZY: weight → 62, wind → 77.'},
+{id:109,code:'38',desc:'(N/A Vueling) ULD',keywords:['uld','container','n/a vueling'],companies:['vly'],notes:''},
+{id:110,code:'39',desc:'Technical Equipment – lack/breakdown / ASU, Pushback, De-icing',keywords:['technical equipment','asu','air starter','pushback','de-icing','tracteur','tug','passerelle','remorquage','panne équipement sol'],companies:['vly'],notes:'Missing mechanic pushback BCN → 42.'},
+{id:28,code:'41',desc:'Aircraft Defects / Panne avion',keywords:['defect','panne','technical','technique','maintenance','mécanique','snag','inop','tech log entry','moc','engineer','avionique','aircraft defect','pfi','technician'],companies:['ezy','vly'],notes:'EZY: existing tech log → 43. VLY: only if boarding/departure held by maintenance.'},
+{id:29,code:'42',desc:'Scheduled Maintenance – late release / Maintenance planifiée',keywords:['scheduled maintenance','maintenance programmée','late release','libération tardive','visite','check','a-check','daily','mechanic','mécanicien','pushback mechanic'],companies:['ezy','vly'],notes:'VLY: also late mechanic for pushback (add SI).'},
+{id:30,code:'43',desc:'Non-scheduled Maintenance / Maintenance non planifiée',keywords:['unscheduled','non programmée','non-scheduled','special checks','wingtip brake','fuel tank dipstick','additional works','engineer existing defect','panne inattendue','réparation'],companies:['ezy','vly'],notes:'EZY: engineer for existing tech log defect.'},
+{id:31,code:'44',desc:'Spares & Maintenance Equipment / Pièces détachées',keywords:['spares','pièces','tools','outillage','spare part','mel','cdl','maintenance equipment','pièce détachée','breakdown equipment'],companies:['ezy','vly'],notes:''},
+{id:32,code:'45',desc:'AOG Spares / Pièces AOG',keywords:['aog','aircraft on ground','avion au sol','spare aog','pièce urgente','another station'],companies:['ezy','vly'],notes:''},
+{id:33,code:'46',desc:'Aircraft Change – technical / Changement avion technique',keywords:['aircraft change','changement avion','substitution','swap','technical reason','sub','backup'],companies:['ezy','vly'],notes:'EZY: non-tech/unknown → 96. VLY: first change → 46, following → 96.'},
+{id:111,code:'47',desc:'NOT IN USE BY VLG',keywords:['not in use'],companies:['vly'],notes:''},
+{id:112,code:'48',desc:'Airbus System Resets (VLG)',keywords:['airbus reset','system reset','réinitialisation','reset système'],companies:['vly'],notes:''},
+{id:113,code:'49',desc:'Technical Fault – impact ground time (max 5 min)',keywords:['technical fault','mel','deferred items','apu inop','air start','asu','max 5 min','restriction opérationnelle'],companies:['vly'],notes:'ASU late/broken → 39.'},
+{id:34,code:'51',desc:'Damage during Flight Operations / Dommage en vol',keywords:['damage flight','bird strike','collision oiseau','lightning','foudre','turbulence','heavy landing','atterrissage dur','overweight','over speed','wheel change','puncture','taxi collision','spillage'],companies:['ezy','vly'],notes:''},
+{id:35,code:'52',desc:'Damage during Ground Operations / Dommage au sol',keywords:['damage ground','collision sol','loading damage','contamination','towing damage','slide blown','ground collision','dommage chargement','water waste','overfill'],companies:['ezy','vly'],notes:'EZY: slide by crew → 68. VLY: SI mandatory.'},
+{id:114,code:'53',desc:'Aircraft Change – damage during flight ops (VLG)',keywords:['aircraft change damage flight','turbulence damage'],companies:['vly'],notes:''},
+{id:115,code:'54',desc:'Aircraft Change – damage during ground ops (VLG)',keywords:['aircraft change damage ground','loading damage change'],companies:['vly'],notes:''},
+{id:36,code:'55',desc:'Departure Control System Failure / Panne DCS',keywords:['departure control','dcs','system failure','panne système','check-in failure','kiosk','boarding system','informatique','check-in kiosk','eres','terminal locked','w&b system'],companies:['ezy','vly'],notes:'VLY: a) DCS Handling Check-in b) DCS W&B c) Terminal locked/slow.'},
+{id:37,code:'56',desc:'Connect Aircraft (EZY) / Cargo System Failure (VLG)',keywords:['connect aircraft','ofp download','efb','connect','téléchargement ofp','cargo system','système cargo','panne cargo'],companies:['ezy','vly'],notes:'EZY: unable download OFP. VLG: cargo system failure.'},
+{id:38,code:'57',desc:'Flight Planning System Failure / Panne système plan de vol',keywords:['flight plan system','lido','panne plan de vol','cfp system','ofp system','flight planning failure'],companies:['ezy','vly'],notes:'EZY: other reasons → 61.'},
+{id:39,code:'58',desc:'Other Automated System Failure / Autre système',keywords:['automated system','autre système','system failure other','panne automatique','eres','acars','radio','communication failure'],companies:['ezy','vly'],notes:'EZY: boarding/check-in → 55, FIDS → 87.'},
+{id:40,code:'59',desc:'Connect Aircraft Comms (EZY) / Cálculos última hora (VLG)',keywords:['comms signal','signal','3g','4g','wifi','efb','connect comms','réseau','calculos','última hora','head count','h/c'],companies:['ezy','vly'],notes:'EZY: unreliable signal for EFB. VLG: last minute calculations.'},
+{id:41,code:'61',desc:'Flight Documentation / Documentation vol',keywords:['flight documentation','plan de vol','documentation vol','crew portal','crewroom printer','imprimante','operational planning','late crew std-35','fp error','briefing','gendec','crew dispatch'],companies:['ezy','vly'],notes:'EZY: Lido failure → 57. VLY: a) FP error b) Late briefing c) GENDEC error.'},
+{id:42,code:'62',desc:'Operational Requirements – fuel, load / Exigences opérationnelles',keywords:['operational requirements','extra fuel','carburant supplémentaire','load alteration','performance limitations','fuel uplift','takeoff limitations','ambulift blocking','weight limitation','limitation masse','defueling','ballast','economy fuel','demande commandant','cat iii','ops engineering'],companies:['ezy','vly'],notes:'EZY: fueller on time but uplift late. VLY: de-fueling/ballast, economy fuel, extra fuel CDB, last minute crew change.'},
+{id:43,code:'63',desc:'Late Crew Boarding / Departure Procedures (flight deck or entire crew)',keywords:['late crew','crew boarding','departure procedures','équipage retard','crew change','crew room','briefing','door closure','crew late std-35','late entire crew','late flight deck','pilote retard','pnt retard'],companies:['ezy','vly'],notes:'EZY: security queue → 86, coaches → 19, single FD system → 57/61, CC only → 66, standby → 64, other flight → 95. VLY: other than connection/standby/transport.'},
+{id:44,code:'64',desc:'Flight Deck Crew Shortage / Manque pilotes',keywords:['flight deck shortage','pnt manque','pilote absent','sick pilot','sickness','no show pilot','ftl','standby pilot','visa','health docs','licence','crew shortage','pilote malade','scheduling error','rostering'],companies:['ezy','vly'],notes:'VLY: a) Sickness/No show b) MX c) FTL d) Scheduling e) Other f) Training g) Lack stby h) Sick >01H30.'},
+{id:45,code:'65',desc:'Flight Deck Crew Special Request / Demande spéciale pilotes',keywords:['captain request','demande commandant','special request','lmc','discretionary','water service','toilet service','request not to board','catering captain','signature missing','pfi','accept pax h-10'],companies:['ezy','vly'],notes:'VLY: a) Catering CDB b) Signature missing c) Extended briefing d) PFI e) Accept pax after H-10.'},
+{id:46,code:'66',desc:'Late Cabin Crew Boarding / Departure Procedures',keywords:['cabin crew late','pnc retard','cabin security check','slow settling','aisle obstruction','seating restriction','cabin management','cabin crew boarding','hôtesse retard','steward retard','pax slow','slow disembark','settling','débarquement'],companies:['ezy','vly'],notes:'EZY: security check >8 min, slow pax, offload cabin bags, CC only late. Gate → 15, volume → 10, entire crew → 63, standby → 67. VLY: other than connection/standby/transport.'},
+{id:47,code:'67',desc:'Cabin Crew Shortage / Manque PNC',keywords:['cabin crew shortage','pnc manque','pnc absent','hôtesse absente','sick cabin crew','no show pnc','ftl pnc','standby cc','visa pnc','navl','sick out of base'],companies:['ezy','vly'],notes:''},
+{id:48,code:'68',desc:'Cabin Crew Error / Non-Operational Special Request',keywords:['cabin crew error','erreur pnc','headcount error','comptage erreur','slide blown crew','toboggan','demande nettoyage','cleaners return','special request cc','miscounting','evacuation slide'],companies:['ezy','vly'],notes:'EZY: slide by non-crew → 52, gate count incorrect → 15. VLY: a) Miscounting b) Catering CC c) Slide deployed.'},
+{id:49,code:'69',desc:'Captain Security Check (EZY) / Not in use (VLG)',keywords:['captain security','security check extraordinary','baggage reconciliation','réconciliation bagage','demande capitaine sécurité','full security check','not in use'],companies:['ezy','vly'],notes:'EZY: captain request not required by GHM.'},
+{id:50,code:'71',desc:'Weather at Departure Station / Météo départ',keywords:['weather departure','météo départ','lvp','low visibility','brouillard','fog','vent','wind','visibilité','neige','snow','orage','storm','pluie','rain','ice','minima','cabin temperature'],companies:['ezy','vly'],notes:'EZY: LVP. VLY: all aircraft restrictions + cabin temperature.'},
+{id:51,code:'72',desc:'Weather at Destination / Météo destination',keywords:['weather destination','météo arrivée','destination weather','operating limits','icing conditions','wing inspection','minima','alternate'],companies:['ezy','vly'],notes:'EZY: ATFM → 84.'},
+{id:116,code:'73',desc:'En Route or Alternative – weather below minima (VLG)',keywords:['en route','enroute','turbulence','alternative','déroutement météo','weather en route'],companies:['vly'],notes:''},
+{id:52,code:'75',desc:'De-Icing of Aircraft / Dégivrage avion',keywords:['deicing','de-icing','dégivrage','anti-icing','givre','gel','frost','glycol','holdover','neige avion','ice removal aircraft','thawing'],companies:['ezy','vly'],notes:'EZY: airport → 76, fan blade → 78, equipment → 34. VLY: a) Before/after push b) Thawing c) Lack equipment.'},
+{id:53,code:'76',desc:'Removal Snow/Ice from Airport / Déneigement aéroport',keywords:['snow removal','déneigement','runway snow','piste neige','ice removal airport','sablage','sand','water removal','taxiway','walkway'],companies:['ezy','vly'],notes:''},
+{id:54,code:'77',desc:'Ground Handling Impaired by Weather / Handling perturbé par météo',keywords:['adverse weather','handling impaired','high winds','heavy rain','vent fort','pluie forte','cannot open doors','mobile steps','air bridge lower','passerelle vent','intempéries','finger not connectable'],companies:['ezy','vly'],notes:''},
+{id:55,code:'78',desc:'Fan Blade De-Icing / Dégivrage soufflantes moteur',keywords:['fan blade','dégivrage moteur','engine fan','ice fan blade','pale moteur','givre moteur','réacteur givre'],companies:['ezy'],notes:''},
+{id:56,code:'81',desc:'Slots – en-route ATC flow / ATFM demand/capacity',keywords:['atfm','slot','ctot','en-route','flow','demand','capacity','régulation','cfmu','slot en-route','atfcm'],companies:['ezy','vly'],notes:'EZY: measured from 3 min after door closure. Industrial action → 82.'},
+{id:57,code:'82',desc:'Slots – ATC Staff/Equipment En-route / Grève ATC',keywords:['atfm staff','atc staff shortage','equipment failure atc','grève atc','industrial action','manque personnel atc','capacity reduction','neighbouring area','grève contrôleur','manque contrôleur'],companies:['ezy','vly'],notes:''},
+{id:58,code:'83',desc:'Slot – Restriction at Destination / Restriction destination',keywords:['slot destination','restriction destination','runway closed destination','obstruction','curfew destination','special flights','noise abatement'],companies:['ezy','vly'],notes:'VLY: if departure → 89.'},
+{id:59,code:'84',desc:'Slot – Weather at Destination / Météo destination ATFM',keywords:['slot weather','atfm météo','weather destination slot','eobt','tobt','météo destination','slot météo','restriction météo'],companies:['ezy','vly'],notes:''},
+{id:60,code:'85',desc:'Mandatory Security / Sûreté obligatoire',keywords:['mandatory security','sûreté obligatoire','security check','level 4','baggage screening','fouille obligatoire','extended search','broken seal','scellé','disruptive passenger'],companies:['ezy','vly'],notes:'EZY: queues → 86. VLY: illness → 16, baggage offload late pax → 05.'},
+{id:61,code:'86',desc:'Immigration, Customs, Health / Douane, Santé, Sécurité crew/pax',keywords:['immigration','customs','douane','health','santé','police','security search','crew security','staff security','paf','passeport','file sûreté','pandemic','pandémie'],companies:['ezy','vly'],notes:''},
+{id:62,code:'87',desc:'Airport Facilities / Installations aéroport',keywords:['airport facilities','parking stand','gate limitation','fids','tannoy','security swipe','ramp congestion','infrastructure','conflict pax','lighting','gate layout','installations aéroport','stand allocation','jet bridge','passerelle','jetbridge','boarding pass printer','gate system','baggage sorting','tri bagage inop','security queue'],companies:['ezy','vly'],notes:'EZY: not for airbridge boarding time (→66/15). VLG: 11 sub-items including jet bridge inop.'},
+{id:63,code:'88',desc:'Restrictions at Destination Airport',keywords:['restriction destination','destination closed','runway obstruction','bomb scare','fire alert','evacuation','political unrest','curfew destination','couvre-feu','noise abatement'],companies:['ezy','vly'],notes:'EZY: measured from 3 min after door closure.'},
+{id:64,code:'89',desc:'Restrictions at Departure Airport / Restriction départ',keywords:['restriction departure','restriction départ','start-up','pushback clearance','cannot push','cannot move','departure restriction','ready but cannot','tow late','attente start-up','cdm','ramp congestion','runway closed','piste fermée','couvre-feu','runway configuration'],companies:['ezy','vly'],notes:'EZY: measured from 3 min after door closure. Headset/tug → 34. VLY: a) CDM b) Pushback ramp congestion c) Runway closed d-h) Other.'},
+{id:117,code:'91',desc:'Waiting for Transit Passengers and Bags (VLG)',keywords:['transit','correspondance','connecting pax','transfert','bagages transit','attente pax'],companies:['vly'],notes:''},
+{id:118,code:'92',desc:'Civil Aviation Inspection (VLG) – SANA, SAFA',keywords:['civil aviation','inspection','sana','safa','ramp check','contrôle aviation'],companies:['vly'],notes:''},
+{id:65,code:'93',desc:'Aircraft Rotation / Rotation avion',keywords:['reactionary','réactionnaire','rotation','late arrival','arrivée tardive','retard propagé','vol précédent','inbound','late inbound','aircraft rotation','previous sector'],companies:['ezy','vly'],notes:'VLY: if exceeds minimum ground time → reflect cause (e.g. 93+34). >160 pax: +5 min in 30 min turnarounds.'},
+{id:66,code:'94',desc:'Cabin Crew Rotation / Rotation PNC',keywords:['cabin crew rotation','pnc rotation','awaiting cabin crew','pnc vol précédent'],companies:['ezy','vly'],notes:'VLY: no lo utilizan (not used).'},
+{id:67,code:'95',desc:'Crew Rotation / Rotation équipage (pilotes ou complet)',keywords:['crew rotation','flight deck rotation','pnt rotation','pilot rotation','awaiting crew','équipage vol précédent','awaiting flight crew','schengen'],companies:['ezy','vly'],notes:'VLY: a) Schengen–Schengen b) Schengen–No Schengen or reverse.'},
+{id:68,code:'96',desc:'Operations Control / OCC',keywords:['operations control','occ','re-route','diversion','déroutement','consolidation','aircraft change non-tech','changement avion non technique','régulation','reroutage','occ error','operational protection','aog ops','curfew protection'],companies:['ezy','vly'],notes:'EZY: tech A/C change → 46. VLY: a) Protection b) OCC ERROR c) AOG d) DAMAGE e) CURFEW PROTECTION.'},
+{id:69,code:'97',desc:'Industrial Action – within own airline / Grève interne',keywords:['strike own','grève compagnie','grève interne','industrial action own','mouvement social'],companies:['ezy','vly'],notes:''},
+{id:70,code:'98',desc:'Industrial Action – outside own airline / Grève externe',keywords:['strike external','grève externe','grève handling','grève pompier','grève nationale','firemen','national strike','grève atc','x-ray strike','grève sûreté'],companies:['ezy','vly'],notes:'EZY: excl. ATS. VLY: a) ATC b) Handling c) Security X-ray.'},
+{id:71,code:'99',desc:'No matching code / Aucun code correspondant',keywords:['no code','pas de code','divers','miscellaneous','caa','regulatory','inspection','last resort','autre','si section','errors previous','additional cleaning','late fuel service'],companies:['ezy','vly'],notes:'EZY: last resort, explain in SI. VLY: a-e) Various including additional cleaning after A/C change.'},
+// ═══ VUELING OWN CODES ═══
+{id:200,code:'01',desc:'Late Passenger Cabin Delivery (VLG)',keywords:['cabin delivery','preflight','turnaround','livraison cabine','préparation cabine','temps rotation','H-30','H-25','H-22'],companies:['vly'],notes:'Preflight >10 min. Turnaround insufficient: H-30 (45+), H-25 (40), H-22 (35 min).'},
+{id:201,code:'02',desc:'Commercial Slot Discrepancy (VLG)',keywords:['slot discrepancy','slot commercial','créneau','plan de vol annulé'],companies:['vly'],notes:'Not in code 16. Also if FP cancelled by airport.'},
+{id:202,code:'03',desc:'Late Crew Pick-Up (VLG)',keywords:['crew pick up','ramassage équipage','transport crew','navette crew','bus crew'],companies:['vly'],notes:'Late crew pick up outside the airport.'},
+{id:203,code:'04',desc:'Slow Boarding/De-Boarding – High Volume PAX to Assist (VLG)',keywords:['slow boarding','embarquement lent','wch','wheelchair','fauteuil roulant','pmr','prm','psm','volume pax','débarquement lent'],companies:['vly'],notes:'Numerous WCH passengers. Include WCH type (R/C/S).'},
+{id:204,code:'05',desc:'Baggage Search/Offload (VLG)',keywords:['baggage search','offload','recherche bagage','no show','pax absent','bagage orphelin'],companies:['vly'],notes:'Searching checked-in baggage due to late/no-show pax.'},
+{id:205,code:'06',desc:'Excess Hand Baggage at Gate/On Board (VLG)',keywords:['hand baggage','bagage cabine','excès bagage','gate to hold','cabin bag','excess baggage'],companies:['vly'],notes:'Bags from gate to hold.'},
+{id:206,code:'07',desc:'Late Accommodation of Passengers (VLG)',keywords:['slow accommodation','slow disembarkation','débarquement lent','installation lente','pax lents'],companies:['vly'],notes:'a) Slow disembarkation b) Slow accommodation.'},
+{id:207,code:'08',desc:'Flight Time Higher Than Scheduled (VLG)',keywords:['flight time','temps de vol','block time','vol plus long','dépassement temps vol'],companies:['vly'],notes:''},
+{id:208,code:'09',desc:'Scheduled Ground Time < Declared Minimum (VLG)',keywords:['ground time','minimum ground time','rotation courte','turnaround court','escale insuffisante'],companies:['vly'],notes:''},
+];
+
+async function getCodes(){
+  try{ const r=await window.storage.get(KEY_CODES); if(r&&r.value) return JSON.parse(r.value); } catch(e){}
+  return DEFAULT_CODES;
+}
+
+async function saveCodes(codes){
+  try{ await window.storage.set(KEY_CODES, JSON.stringify(codes)); } catch(e){}
+}
+
+function filterCompany(f){
+  codesFilter=f;
+  document.querySelectorAll('.codes-filter').forEach(b=>b.classList.remove('active'));
+  document.getElementById('filter-'+f).classList.add('active');
+  searchCodes();
+}
+
+function highlight(text, query){
+  if(!query) return text;
+  const re=new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return text.replace(re,'<span class="hl">$1</span>');
+}
+
+function normSearch(t){return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s]/g,' ').trim();}
+
+async function searchCodes(){
+  const q=(document.getElementById('codes-search').value||'').trim();
+  const clearBtn=document.getElementById('codes-clear-btn');
+  clearBtn.style.display=q?'block':'none';
+
+  const placeholder=document.getElementById('codes-placeholder');
+  const emptyEl=document.getElementById('codes-empty');
+  const resultsEl=document.getElementById('codes-results');
+
+  if(!q||q.length<2){ placeholder.style.display='block'; resultsEl.innerHTML=''; emptyEl.style.display='none'; return; }
+  placeholder.style.display='none';
+
+  const codes=await getCodes();
+  const qn=normSearch(q);
+  const words=qn.split(/\s+/).filter(w=>w.length>1);
+
+  let scored=codes.filter(c=>{
+    if(codesFilter!=='all'&&!c.companies.includes(codesFilter)) return false;
+    return true;
+  }).map(c=>{
+    let score=0;
+    const dn=normSearch(c.desc);
+    const nn=c.notes?normSearch(c.notes):'';
+    // Exact code match
+    if(q===c.code) score+=100;
+    // Keyword matching
+    for(const kw of (c.keywords||[])){
+      const kwn=normSearch(kw);
+      if(qn.includes(kwn)) score+=15;
+      if(kwn.includes(qn)) score+=10;
+      for(const w of words){if(kwn.includes(w))score+=5;if(w.includes(kwn))score+=3;}
+    }
+    // Desc/notes matching
+    for(const w of words){if(dn.includes(w))score+=8;if(nn.includes(w))score+=6;}
+    if(dn.includes(qn))score+=20;
+    if(nn.includes(qn))score+=12;
+    return{...c,_score:score};
+  }).filter(c=>c._score>0).sort((a,b)=>b._score-a._score).slice(0,20);
+
+  emptyEl.style.display=scored.length===0?'block':'none';
+  resultsEl.innerHTML='';
+
+  scored.forEach(c=>{
+    const isBoth=c.companies.includes('ezy')&&c.companies.includes('vly');
+    const badgeCls=isBoth?'both':c.companies[0];
+    const coTags=c.companies.map(co=>`<span class="co-tag ${co}">${co.toUpperCase()}</span>`).join('');
+    const kwTags=(c.keywords||[]).map(k=>`<span>${highlight(k,q)}</span>`).join('');
+    const div=document.createElement('div');
+    div.className='code-card';
+    div.innerHTML=`
+      <div class="code-badge ${badgeCls}">${highlight(c.code,q)}</div>
+      <div class="code-info">
+        <div class="code-desc">${highlight(c.desc,q)}</div>
+        ${c.keywords&&c.keywords.length?`<div class="code-keywords">${kwTags}</div>`:''}
+        ${c.notes?`<div class="code-notes">${highlight(c.notes,q)}</div>`:''}
+      </div>
+      <div class="code-companies">${coTags}</div>
+      <button class="code-del-btn" onclick="deleteCode(${c.id})" title="Supprimer">🗑</button>
+    `;
+    resultsEl.appendChild(div);
+  });
+}
+
+function clearCodesSearch(){
+  document.getElementById('codes-search').value='';
+  searchCodes();
+}
+
+function openAddCode(id=null){
+  editingCodeId=id;
+  document.getElementById('modal-title').textContent=id?'Modifier le code':'Ajouter un code DL';
+  document.getElementById('new-code').value='';
+  document.getElementById('new-desc').value='';
+  document.getElementById('new-keywords').value='';
+  document.getElementById('new-notes').value='';
+  document.getElementById('new-ezy').checked=true;
+  document.getElementById('new-vly').checked=false;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-add').classList.add('open');
+  document.getElementById('new-code').focus();
+}
+
+function closeAddCode(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-add').classList.remove('open');
+  editingCodeId=null;
+}
+
+async function saveCode(){
+  const code=document.getElementById('new-code').value.trim();
+  const desc=document.getElementById('new-desc').value.trim();
+  if(!code||!desc){ alert('Code et description requis.'); return; }
+  const keywords=document.getElementById('new-keywords').value.split(',').map(k=>k.trim()).filter(Boolean);
+  const notes=document.getElementById('new-notes').value.trim();
+  const companies=[];
+  if(document.getElementById('new-ezy').checked) companies.push('ezy');
+  if(document.getElementById('new-vly').checked) companies.push('vly');
+  if(!companies.length){ alert('Sélectionner au moins une compagnie.'); return; }
+
+  const codes=await getCodes();
+  const entry={id:editingCodeId||Date.now(), code, desc, keywords, companies, notes};
+  const idx=codes.findIndex(c=>c.id===editingCodeId);
+  if(idx>=0) codes[idx]=entry; else codes.push(entry);
+  await saveCodes(codes);
+  closeAddCode();
+  searchCodes();
+}
+
+async function deleteCode(id){
+  if(!confirm('Supprimer ce code ?')) return;
+  const codes=await getCodes();
+  await saveCodes(codes.filter(c=>c.id!==id));
+  searchCodes();
+}
+
+// ── BUILD CAUSES TABLE (removed — keeping code DL search only) ───────
+const causesBody = document.getElementById('causes-body');
+if(causesBody){ for(let i=0;i<4;i++){
+  const tr = document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" class="cause-label" placeholder="ex: Passerelle" oninput="calcAll()"></td>
+    <td><input type="number" class="cause-min" min="0" placeholder="0" oninput="calcAll()"></td>
+    <td><input type="text" class="cause-iata" placeholder="93" maxlength="4" oninput="calcAll()"></td>
+    <td><input type="text" class="cause-note" placeholder="Notes…" oninput="calcAll()"></td>`;
+  causesBody.appendChild(tr);
+}}
+
+// ── TIME UTILS ────────────────────────────────────────────────────────
+function parseTime(raw){
+  if(!raw||raw.trim()===''||raw==='--:--') return null;
+  let s=raw.replace(':','').trim();
+  if(s.length<3) return null;
+  s=s.padStart(4,'0');
+  const h=parseInt(s.slice(0,2),10), m=parseInt(s.slice(2,4),10);
+  if(isNaN(h)||isNaN(m)||h>23||m>59) return null;
+  return h*60+m;
+}
+function fmtTime(mins){
+  if(mins===null||mins===undefined) return '--:--';
+  const t=((mins%1440)+1440)%1440;
+  return p2(Math.floor(t/60))+':'+p2(t%60);
+}
+function fmtMin(v){
+  if(v===null||v===undefined||isNaN(v)) return '--';
+  return (v>0?'+':'')+v+' min';
+}
+
+// ── AUTO-FORMAT INPUT + AUTO-ADVANCE ─────────────────────────────────
+const FIELD_ORDER=['vol-num','vol-date','sta','ata','ado','std','adct','adc','atd','ctot'];
+
+function focusNext(currentId){
+  const idx=FIELD_ORDER.indexOf(currentId);
+  if(idx>=0 && idx<FIELD_ORDER.length-1){
+    const next=document.getElementById(FIELD_ORDER[idx+1]);
+    if(next){setTimeout(()=>next.focus(),50);next.select&&setTimeout(()=>next.select(),60);}
+  }
+}
+
+function autoFormat(el){
+  const parsed=parseTime(el.value);
+  if(el.value.trim()!==''&&el.value!=='--:--'){
+    if(parsed!==null){el.value=fmtTime(parsed);el.classList.remove('error');el.classList.add('valid');}
+    else{el.classList.add('error');el.classList.remove('valid');}
+  }
+}
+const timeIds=['sta','ata','ado','std','adct','adc','atd','ctot'];
+timeIds.forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('blur',()=>{autoFormat(el);if(id==='std')autoFillADCT();calcAll();});
+  el.addEventListener('input',()=>{
+    el.classList.remove('error','valid');
+    const v=el.value.replace(':','');
+    if(v.length===4&&/^\d{4}$/.test(v)){
+      el.value=v.slice(0,2)+':'+v.slice(2);
+      el.classList.add('valid');
+      if(id==='std') autoFillADCT();
+      calcAll();
+      focusNext(id);
+    }
+  });
+});
+
+// Vol number → uppercase + auto-advance on reasonable length
+document.getElementById('vol-num').addEventListener('input',function(){
+  this.value=this.value.toUpperCase();
+  autoSave();
+});
+
+['ttm','marge'].forEach(id=>document.getElementById(id).addEventListener('input',calcAll));
+
+// ── PRESETS ───────────────────────────────────────────────────────────
+const PRESETS = {
+  ezy: { name:'EasyJet', ttm:30, marge:4, passNorm:3, doorClose:4, volPrefix:'EJU', immatPrefix:'OE-', maxCauses:3,
+    acTypes:[
+      {code:'319',label:'A319',ttm:30},
+      {code:'320',label:'A320',ttm:30},
+    ]},
+  vly: { name:'Vueling', ttm:40, marge:0, passNorm:4, doorClose:5, volPrefix:'VY', immatPrefix:'EC-', maxCauses:4,
+    acTypes:[
+      {code:'319',label:'A319',ttm:40},
+      {code:'320',label:'A320',ttm:40},
+      {code:'320N',label:'A320N',ttm:45},
+      {code:'321',label:'A321',ttm:45},
+      {code:'321N',label:'A321N',ttm:50},
+    ]},
+};
+let activePreset = null;
+let activeAcType = null;
+let crewChange = false;
+let firstwave = false;
+let lastwave = false;
+
+function autoFillADCT(){
+  if(!activePreset) return;
+  const std=parseTime(document.getElementById('std').value);
+  if(std===null) return;
+  const dc=firstwave&&activePreset==='ezy'?8:PRESETS[activePreset].doorClose;
+  const adctEl=document.getElementById('adct');
+  adctEl.value=fmtTime(std-dc);
+  adctEl.classList.remove('error');
+  adctEl.classList.add('valid');
+}
+
+function getEffectiveTTM(baseTTM){
+  let ttm=baseTTM;
+  if(activeAcType&&activePreset){
+    const acTypes=PRESETS[activePreset].acTypes||[];
+    const ac=acTypes.find(a=>a.code===activeAcType);
+    if(ac) ttm=ac.ttm;
+  }
+  return crewChange ? ttm + 5 : ttm;
+}
+
+function getEffectiveMarge(){
+  if(!activePreset) return parseInt(document.getElementById('marge').value)||0;
+  if(firstwave && activePreset==='ezy') return 8;
+  return PRESETS[activePreset].marge;
+}
+
+function applyPresetValues(){
+  if(!activePreset) return;
+  const p = PRESETS[activePreset];
+  document.getElementById('ttm').value = getEffectiveTTM(p.ttm);
+  document.getElementById('marge').value = getEffectiveMarge();
+  // Pre-fill vol prefix if empty or just a prefix
+  const volEl=document.getElementById('vol-num');
+  const cur=volEl.value.trim();
+  const prefixes=Object.values(PRESETS).map(x=>x.volPrefix);
+  if(!cur || prefixes.includes(cur)) volEl.value=p.volPrefix;
+  // Pre-fill immat prefix if empty or just a prefix
+  const immatEl=document.getElementById('vol-immat');
+  const curImmat=immatEl.value.trim();
+  const immatPrefixes=Object.values(PRESETS).map(x=>x.immatPrefix);
+  if(!curImmat || immatPrefixes.includes(curImmat)) immatEl.value=p.immatPrefix;
+  updateCauseRows(p.maxCauses);
+  renderAcTypeButtons();
+  autoFillADCT();
+  calcAll();
+}
+
+// ── AIRCRAFT TYPE SELECTION ──────────────────────────────────────────
+function renderAcTypeButtons(){
+  const bar=document.getElementById('actype-bar');
+  const container=document.getElementById('actype-buttons');
+  if(!activePreset){bar.style.display='none';return;}
+  const acTypes=PRESETS[activePreset].acTypes||[];
+  if(!acTypes.length){bar.style.display='none';return;}
+  bar.style.display='flex';
+  const presetCls=activePreset==='ezy'?'ezy':'vly';
+  container.innerHTML=acTypes.map(ac=>`
+    <button class="preset-btn ${presetCls} ${activeAcType===ac.code?'active':''}" onclick="setAcType('${ac.code}')" style="font-size:12px;padding:6px 12px">
+      ${ac.label}<span style="font-size:9px;opacity:.6;margin-left:4px">${ac.ttm}′</span>
+    </button>
+  `).join('');
+}
+
+function setAcType(code){
+  if(activeAcType===code){ activeAcType=null; }
+  else { activeAcType=code; }
+  if(activePreset){
+    const p=PRESETS[activePreset];
+    document.getElementById('ttm').value=getEffectiveTTM(p.ttm);
+  }
+  renderAcTypeButtons();
+  calcAll();
+}
+
+// ── CAUSE ROWS VISIBILITY ────────────────────────────────────────────
+function updateCauseRows(max){}
+
+function setPreset(key){
+  if(activePreset===key){
+    activePreset=null;
+    activeAcType=null;
+    document.getElementById('ttm').value='';
+    document.getElementById('marge').value='';
+    document.getElementById('vol-num').value='';
+    document.getElementById('vol-date').value='';
+    document.getElementById('vol-immat').value='';
+    document.querySelectorAll('.preset-btn.ezy, .preset-btn.vly').forEach(b=>b.classList.remove('active'));
+    document.getElementById('actype-bar').style.display='none';
+    applyTheme();
+    // Reset crew & firstwave & lastwave
+    crewChange=false; document.getElementById('btn-crew').classList.remove('active');
+    if(firstwave){ firstwave=false; document.getElementById('arr-fields').classList.remove('disabled'); }
+    if(lastwave){ lastwave=false; document.getElementById('panel-dep').classList.remove('disabled'); document.getElementById('field-ctot').classList.remove('disabled'); }
+    document.getElementById('btn-fw').classList.remove('active');
+    document.getElementById('btn-fw').style.opacity='0.3';
+    document.getElementById('btn-fw').style.pointerEvents='none';
+    document.getElementById('btn-lw').classList.remove('active');
+    document.getElementById('btn-lw').style.opacity='0.3';
+    document.getElementById('btn-lw').style.pointerEvents='none';
+    updateCauseRows(4);
+
+    calcAll(); return;
+  }
+  activePreset=key;
+  activeAcType='320';
+  document.querySelectorAll('.preset-btn.ezy, .preset-btn.vly').forEach(b=>b.classList.remove('active'));
+  document.getElementById('preset-'+key).classList.add('active');
+  applyTheme();
+
+  // First & Last available
+  document.getElementById('btn-fw').style.opacity = '1';
+  document.getElementById('btn-fw').style.pointerEvents = 'auto';
+  document.getElementById('btn-lw').style.opacity = '1';
+  document.getElementById('btn-lw').style.pointerEvents = 'auto';
+  applyPresetValues();
+}
+
+function toggleCrew(){
+  crewChange=!crewChange;
+  document.getElementById('btn-crew').classList.toggle('active', crewChange);
+  if(activePreset) applyPresetValues();
+}
+
+function toggleFirstwave(){
+  if(!activePreset) return;
+  firstwave=!firstwave;
+  if(firstwave && lastwave){ lastwave=false; document.getElementById('btn-lw').classList.remove('active'); document.getElementById('panel-dep').classList.remove('disabled'); document.getElementById('field-ctot').classList.remove('disabled'); }
+  document.getElementById('btn-fw').classList.toggle('active', firstwave);
+  document.getElementById('arr-fields').classList.toggle('disabled', firstwave);
+  if(firstwave){
+    ['sta','ata','ado'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('field-ptd').style.display='none';
+    document.getElementById('field-ttm-prevu').style.display='none';
+  }
+  applyPresetValues();
+}
+
+function toggleLastwave(){
+  if(!activePreset) return;
+  lastwave=!lastwave;
+  if(lastwave && firstwave){ firstwave=false; document.getElementById('btn-fw').classList.remove('active'); document.getElementById('arr-fields').classList.remove('disabled'); }
+  document.getElementById('btn-lw').classList.toggle('active', lastwave);
+  document.getElementById('panel-dep').classList.toggle('disabled', lastwave);
+  document.getElementById('field-ctot').classList.toggle('disabled', lastwave);
+  if(lastwave){
+    ['std','adct','adc','atd'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('ctot') && (document.getElementById('ctot').value='');
+    document.getElementById('field-ptd').style.display='none';
+    document.getElementById('field-adct-calc').style.display='none';
+  }
+  applyPresetValues();
+}
+
+function getPassNorm(){
+  return activePreset ? PRESETS[activePreset].passNorm : 3;
+}
+
+// ── SET CARD ──────────────────────────────────────────────────────────
+function setCard(id,value,note,cls){
+  const el=document.getElementById(id);
+  el.className='synth-val '+(cls||'na');
+  el.textContent=value;
+  el.classList.add('updated'); setTimeout(()=>el.classList.remove('updated'),400);
+  // Départ: fond rouge si retard
+  if(id==='res-dep'){
+    const item=el.closest('.synth-item');
+    if(item) item.classList.toggle('delay', cls==='warn');
+  }
+  // Note dans la zone synth-notes (id note-xxx)
+  const noteId='note-'+id.replace('res-','');
+  const noteEl=document.getElementById(noteId);
+  if(noteEl&&note!==undefined){
+    noteEl.textContent=note&&note!=='–'?(id.replace('res-','').toUpperCase()+': '+note):'';
+  }
+}
+
+// ── MAIN CALC ─────────────────────────────────────────────────────────
+let lastCalc = {};
+function calcAll(){
+  try{
+    const sta=parseTime(document.getElementById('sta').value);
+    const ata=parseTime(document.getElementById('ata').value);
+    const ado=parseTime(document.getElementById('ado').value);
+    const std=parseTime(document.getElementById('std').value);
+    const atd=parseTime(document.getElementById('atd').value);
+    const adc=parseTime(document.getElementById('adc').value);
+    const ctot=parseTime(document.getElementById('ctot').value);
+    const ttm=parseInt(document.getElementById('ttm').value)||null;
+    const margeRaw=parseInt(document.getElementById('marge').value);
+    const marge=isNaN(margeRaw)?null:margeRaw;
+
+    // 0. TTM calculé = STD - ATA (si ATA) ou STD - STA
+    const ttmPrevuField=document.getElementById('field-ttm-prevu');
+    const ttmPrevuDisplay=document.getElementById('ttm-prevu-display');
+    const effTTM=parseInt(document.getElementById('ttm').value)||0;
+    if(std!==null&&(ata!==null||sta!==null)){
+      const ttmCalc=std-(ata!==null?ata:sta);
+      ttmPrevuField.style.display='flex';
+      if(ttmCalc<effTTM){
+        ttmPrevuDisplay.textContent='⚠️ SHORT TTM ('+ttmCalc+' min)';
+        ttmPrevuDisplay.style.color='var(--red)';
+      } else {
+        ttmPrevuDisplay.textContent=ttmCalc+' min';
+        ttmPrevuDisplay.style.color='var(--accent3)';
+      }
+    } else {
+      ttmPrevuField.style.display='none';
+    }
+
+    // Note ADO — EZY uniquement, si ouverture > 3 min (sans retard codifié)
+    const adoNoteEl=document.getElementById('ado-note');
+    if(adoNoteEl){
+      if(activePreset==='ezy'&&ata!==null&&ado!==null){
+        const dureeAdo=Math.max(0,ado-ata);
+        const passNorm=activePreset?PRESETS[activePreset].passNorm:3;
+        if(dureeAdo>passNorm&&dureeAdo<=passNorm+2){
+          adoNoteEl.textContent='⚠️ ADO '+dureeAdo+'min — limite norme';
+          adoNoteEl.style.color='var(--accent2)';
+          adoNoteEl.style.display='block';
+        } else if(dureeAdo<=passNorm){
+          adoNoteEl.textContent='✓ ADO dans la norme ('+dureeAdo+'min)';
+          adoNoteEl.style.color='var(--accent3)';
+          adoNoteEl.style.display='block';
+        } else {
+          adoNoteEl.style.display='none';
+        }
+      } else {
+        adoNoteEl.style.display='none';
+      }
+    }
+
+    // 1. Retard arrivée
+    let dlArr=null;
+    if(sta!==null&&ata!==null){
+      dlArr=Math.max(0,ata-sta);
+      setCard('res-arr',fmtMin(dlArr),dlArr===0?'À l\'heure ✅':'Retard hérité',dlArr===0?'ok':'warn');
+    } else setCard('res-arr','--','STA + ATA requis','na');
+
+    // 2. PTD → displayed in departure panel
+    let ptd=null;
+    const ptdField=document.getElementById('field-ptd');
+    const ptdDisplay=document.getElementById('ptd-display');
+    const adctCalcField=document.getElementById('field-adct-calc');
+    const adctCalcDisplay=document.getElementById('adct-calc-display');
+
+    if(ata!==null&&ttm!==null&&std!==null){
+      ptd=Math.max(ata+ttm,std);
+      // Si ATA <= STA, pas de répercussion → PTD = STD, pas besoin d'afficher
+      if(sta!==null&&ata<=sta){
+        ptdField.style.display='none';
+        ptd=std;
+      } else {
+        ptdDisplay.textContent=fmtTime(ptd);
+        ptdField.style.display='flex';
+        ptdField.classList.toggle('highlight',ptd>std);
+      }
+    } else if(ata!==null&&ttm!==null){
+      ptd=ata+ttm;
+      ptdDisplay.textContent=fmtTime(ptd);
+      ptdField.style.display='flex';
+      ptdField.classList.add('highlight');
+    } else {
+      ptdField.style.display='none';
+    }
+
+    // 2b. ADCT recalculée = PTD - marge
+    if(ptd!==null&&marge!==null&&ptd>(std||0)){
+      const newAdct=ptd-marge;
+      adctCalcDisplay.textContent=fmtTime(newAdct);
+      adctCalcField.style.display='flex';
+      adctCalcField.classList.add('highlight');
+    } else {
+      adctCalcField.style.display='none';
+    }
+
+    // 3. Porte attendue (PTD - marge)
+    let porteAttendue=null;
+    if(ptd!==null&&marge!==null){
+      porteAttendue=ptd-marge;
+      setCard('res-porte',fmtTime(porteAttendue),'PTD – '+marge+' min','ok');
+    } else setCard('res-porte','--:--','PTD + marge requis','na');
+
+    // 5. Retard départ
+    let dlDep=null;
+    if(std!==null&&atd!==null){
+      dlDep=Math.max(0,atd-std);
+      setCard('res-dep',fmtMin(dlDep),dlDep===0?'À l\'heure ✅':'ATD – STD',dlDep===0?'ok':'warn');
+    } else setCard('res-dep','--','STD + ATD requis','na');
+
+    // 6. CTOT
+    if(ctot!==null&&ptd!==null){
+      const dlCtot=Math.max(0,ctot-ptd);
+      if(atd!==null&&atd<ctot){
+        setCard('res-ctot',fmtMin(dlCtot),'Slot non contraint – CTOT: '+fmtTime(ctot)+' (parti avant)','ok');
+      } else {
+        setCard('res-ctot',fmtMin(dlCtot),dlCtot>0?'Slot actif 🕐 – CTOT: '+fmtTime(ctot):'Pas de contrainte',dlCtot>0?'warn':'ok');
+      }
+    } else setCard('res-ctot','--','Pas de CTOT saisi','na');
+
+    // 7. (ADO card removed)
+
+    // Décomposition — la somme doit toujours = dlDep
+    let rep=0, dlCtotVal=0, depass=0, clearance=0;
+    let repAbsorbed=false;
+
+    if(dlDep>0&&sta!==null&&ata!==null&&std!==null&&atd!==null){
+      // 1. REP = portion du retard causée par l'entrant
+      const ptdDelay=ptd!==null?Math.max(0,ptd-std):0;
+      rep=Math.min(dlDep, ptdDelay);
+      let remaining=dlDep-rep;
+
+      // 2. Retard fermeture porte → dépassement à justifier
+      if(adc!==null&&porteAttendue!==null){
+        const doorDelay=Math.max(0,adc-porteAttendue);
+        depass=Math.min(remaining, doorDelay);
+        remaining-=depass;
+      }
+
+      // 3. Si CTOT inscrit → reste au slot
+      if(ctot!==null&&remaining>0){
+        if(atd<=ctot){
+          // Parti avant ou au slot → tout au slot
+          dlCtotVal=remaining;
+          remaining=0;
+        } else {
+          // Parti APRÈS le slot → slot + clearance
+          clearance=Math.min(remaining, Math.max(0,atd-ctot));
+          dlCtotVal=remaining-clearance;
+          remaining=0;
+        }
+      }
+      // 4. Si pas de CTOT → reste = clearance (roulage)
+      else if(ctot===null&&remaining>0){
+        clearance=remaining;
+        remaining=0;
+      }
+
+    } else if(atd!==null&&atd<=std&&sta!==null&&ata!==null){
+      // Pas de retard départ mais retard arrivée absorbé
+      rep=Math.max(0,ata-sta);
+      repAbsorbed=true;
+    } else if(ptd!==null&&std!==null){
+      rep=Math.max(0,ptd-std);
+    }
+
+    const mx=Math.max(rep,dlCtotVal,clearance,depass,1);
+    document.getElementById('val-rep').textContent=rep>0?(repAbsorbed?'+'+rep+' (abs)':'+'+rep+' min'):'0 min';
+    document.getElementById('val-ctot').textContent=dlCtotVal>0?'+'+dlCtotVal+' min':'0 min';
+    document.getElementById('val-clearance').textContent=clearance>0?'+'+clearance+' min':'0 min';
+    document.getElementById('val-dep2').textContent=depass>0?'+'+depass+' min':'0 min';
+    const justifyBox=document.getElementById('justify-box');
+    const justifyText=document.getElementById('justify-text');
+    if(justifyBox&&justifyText){
+      if(dlDep===null){
+        justifyBox.classList.remove('zero');
+        justifyText.textContent='Renseignez les horaires';
+      } else if(dlDep===0){
+        justifyBox.classList.add('zero');
+        justifyText.innerHTML='✅ Départ à l\'heure';
+      } else if(depass===0){
+        justifyBox.classList.add('zero');
+        justifyText.innerHTML='✅ <b>'+dlDep+' min</b> de retard — entièrement réparti';
+      } else {
+        justifyBox.classList.remove('zero');
+        justifyText.innerHTML='⚙️ <b>'+dlDep+' min</b> de retard, dont <b>'+depass+' min</b> à justifier';
+      }
+    }
+    document.getElementById('bar-rep').style.width=(rep/mx*100)+'%';
+    document.getElementById('bar-ctot').style.width=(dlCtotVal/mx*100)+'%';
+    document.getElementById('bar-clearance').style.width=(clearance/mx*100)+'%';
+    document.getElementById('bar-dep2').style.width=(depass/mx*100)+'%';
+
+    // Store calc state
+    lastCalc={dlArr,ptd,dlDep,rep,dlCtotVal,clearance,depass};
+
+    // Start chrono when ATA is entered, stop when ATD is entered
+    if(ata!==null && atd===null && !chronoInterval) startChrono();
+    if(atd!==null && chronoInterval){clearInterval(chronoInterval);chronoInterval=null;}
+    if(ata===null && chronoInterval){clearInterval(chronoInterval);chronoInterval=null;document.getElementById('live-widget').classList.remove('active');}
+
+    autoSave();
+    renderStdTimeline();
+  } catch(e){console.warn('Calc error:',e);}
+}
+
+// ── AUTO SAVE (current state) ─────────────────────────────────────────
+async function autoSave(){
+  try{
+    const state={
+      volNum:document.getElementById('vol-num').value,
+      volDate:document.getElementById('vol-date').value,
+      volImmat:document.getElementById('vol-immat').value,
+      ttm:document.getElementById('ttm').value,
+      marge:document.getElementById('marge').value,
+      ctot:document.getElementById('ctot').value,
+      sta:document.getElementById('sta').value,
+      ata:document.getElementById('ata').value,
+      ado:document.getElementById('ado').value,
+      std:document.getElementById('std').value,
+      adct:document.getElementById('adct').value,
+      adc:document.getElementById('adc').value,
+      atd:document.getElementById('atd').value,
+      preset:activePreset,
+      acType:activeAcType,
+      firstwave:firstwave,
+      lastwave:lastwave
+    };
+    try{ await window.storage.set(currentKey(), JSON.stringify(state)); flashSave(); renderSheetsBar(); } catch(e){}
+  } catch(e){}
+}
+
+// ── FLASH ─────────────────────────────────────────────────────────────
+let flashTimer=null;
+function flashSave(){
+  const el=document.getElementById('save-flash');
+  el.classList.add('show');
+  clearTimeout(flashTimer);
+  flashTimer=setTimeout(()=>el.classList.remove('show'),1500);
+}
+
+// ── RESTORE CURRENT ───────────────────────────────────────────────────
+async function restoreCurrent(){
+  let r;
+  try{ r=await window.storage.get(currentKey()); } catch(e){ return; } // clé absente = première ouverture
+  if(!r||!r.value) return;
+  try{
+    const s=JSON.parse(r.value);
+    const ids={'volNum':'vol-num','volDate':'vol-date','volImmat':'vol-immat','ttm':'ttm','marge':'marge','ctot':'ctot',
+                'sta':'sta','ata':'ata','ado':'ado','std':'std','adct':'adct','adc':'adc','atd':'atd'};
+    // Restore presets
+    if(s.preset){
+      setPreset(s.preset);
+      if(s.acType) setAcType(s.acType);
+      if(s.firstwave){ firstwave=true; document.getElementById('btn-fw').classList.add('active'); document.getElementById('arr-fields').classList.add('disabled'); }
+      if(s.lastwave){ lastwave=true; document.getElementById('btn-lw').classList.add('active'); document.getElementById('panel-dep').classList.add('disabled'); document.getElementById('field-ctot').classList.add('disabled'); }
+    }
+    // Restore field values AFTER preset (so they override preset defaults)
+    Object.entries(ids).forEach(([k,id])=>{
+      const el=document.getElementById(id);
+      if(el&&s[k]) el.value=s[k];
+    });
+    document.getElementById('sessionInfo').textContent='Données restaurées ✓';
+    calcAll();
+  } catch(e){ console.warn('Restore parse error:',e); }
+}
+
+// ── SAVE TO HISTORY ───────────────────────────────────────────────────
+async function saveToHistory(){
+  try{
+    let history=[];
+    try{ const r=await window.storage.get(KEY_HISTORY); if(r&&r.value) history=JSON.parse(r.value); } catch(e){ history=[]; }
+
+    const causes=[];
+
+    const entry={
+      id: Date.now(),
+      savedAt: new Date().toLocaleString('fr-FR'),
+      volNum: document.getElementById('vol-num').value||'–',
+      volDate: document.getElementById('vol-date').value||new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}),
+      volImmat: document.getElementById('vol-immat').value||'',
+      ttm: document.getElementById('ttm').value,
+      marge: document.getElementById('marge').value,
+      sta: document.getElementById('sta').value,
+      ata: document.getElementById('ata').value,
+      ado: document.getElementById('ado').value,
+      std: document.getElementById('std').value,
+      adct: document.getElementById('adct').value,
+      adc: document.getElementById('adc').value,
+      atd: document.getElementById('atd').value,
+      ctot: document.getElementById('ctot').value,
+      dlArr: lastCalc.dlArr,
+      dlDep: lastCalc.dlDep,
+      rep: lastCalc.rep,
+      dlCtot: lastCalc.dlCtotVal,
+      clearance: lastCalc.clearance||0,
+      depass: lastCalc.depass,
+      causes
+    };
+
+    history.unshift(entry);
+    if(history.length>200) history=history.slice(0,200);
+    try{ await window.storage.set(KEY_HISTORY, JSON.stringify(history)); } catch(e){ console.error('Storage set error:',e); return; }
+
+    // Flash confirm
+    const btn=document.querySelector('.btn-save');
+    const orig=btn.textContent; btn.textContent='✅ Enregistré !'; btn.style.color='var(--accent3)';
+    setTimeout(()=>{btn.textContent=orig;btn.style.color='';},2000);
+  } catch(e){ console.error('Save history error:',e); }
+}
+
+// ── RENDER HISTORY (CARDS) ────────────────────────────────────────────
+let sortKey='date', sortDir=-1;
+async function renderHistory(){
+  try{
+    let history=[];
+    try{ const r=await window.storage.get(KEY_HISTORY); if(r&&r.value) history=JSON.parse(r.value); } catch(e){ history=[]; }
+
+    const q=(document.getElementById('hist-search').value||'').toLowerCase();
+    let filtered=history.filter(e=>
+      (e.volNum||'').toLowerCase().includes(q)||
+      (e.volDate||'').toLowerCase().includes(q)||
+      (e.causes||[]).some(c=>(c.label||'').toLowerCase().includes(q))
+    );
+
+    filtered.sort((a,b)=>{
+      let va,vb;
+      if(sortKey==='date'){va=a.id;vb=b.id;}
+      else if(sortKey==='vol'){va=(a.volNum||'');vb=(b.volNum||'');}
+      else if(sortKey==='dep'){va=a.dlDep??-1;vb=b.dlDep??-1;}
+      return sortDir*(va>vb?1:va<vb?-1:0);
+    });
+
+    document.getElementById('hist-count').textContent=filtered.length+' rotation(s)';
+    document.getElementById('hist-empty').style.display=filtered.length===0?'block':'none';
+
+    const container=document.getElementById('hist-cards');
+    container.innerHTML='';
+
+    filtered.forEach(e=>{
+      const dlArr=e.dlArr??null, dlDep=e.dlDep??null;
+      const rep=e.rep??0, ctotDl=e.dlCtot??0, depass=e.depass??0;
+
+      const dlArrCls=dlArr===null?'na':dlArr>0?'warn':'ok';
+      const dlDepCls=dlDep===null?'na':dlDep>0?'warn':'ok';
+      const dlArrTxt=dlArr===null?'--':(dlArr>0?'+'+dlArr+' min':'0 min');
+      const dlDepTxt=dlDep===null?'--':(dlDep>0?'+'+dlDep+' min':'0 min');
+
+      const causeTags=(e.causes||[]).filter(c=>c.label).map(c=>
+        `<span class="vc-cause-tag">${c.label}${c.min?`<span class="tag-min">${c.min}m</span>`:''}</span>`
+      ).join('')||'<span class="vc-no-causes">Aucune cause saisie</span>';
+
+      const clrDl=e.clearance||0;
+      const mx2=Math.max(rep,ctotDl,clrDl,depass,1);
+
+      const card=document.createElement('div');
+      card.className='vol-card';
+      card.innerHTML=`
+        <div class="vc-header">
+          <span class="vc-vol">${e.volNum||'N/A'}</span>
+          <span class="vc-date">${e.volDate||'–'}</span>
+          ${e.volImmat?`<span class="vc-ttm">${e.volImmat}</span>`:''}
+          <span class="vc-ttm">TTM ${e.ttm||'?'} min</span>
+        </div>
+        <div class="vc-times">
+          <div class="vc-side">
+            <div class="vc-side-title">🛬 Arrivée</div>
+            <div class="vc-time-row"><span class="vc-time-lbl">STA</span><span class="vc-time-val">${e.sta||'–'}</span></div>
+            <div class="vc-time-row"><span class="vc-time-lbl">ATA</span><span class="vc-time-val" style="color:var(--accent)">${e.ata||'–'}</span></div>
+            <div class="vc-time-row"><span class="vc-time-lbl">ADO</span><span class="vc-time-val">${e.ado||'–'}</span></div>
+          </div>
+          <div class="vc-divider"></div>
+          <div class="vc-side" style="padding-left:12px">
+            <div class="vc-side-title">🛫 Départ</div>
+            <div class="vc-time-row"><span class="vc-time-lbl">STD</span><span class="vc-time-val">${e.std||'–'}</span></div>
+            <div class="vc-time-row"><span class="vc-time-lbl">ATD</span><span class="vc-time-val" style="color:var(--accent)">${e.atd||'–'}</span></div>
+            <div class="vc-time-row"><span class="vc-time-lbl">ADC</span><span class="vc-time-val">${e.adc||'–'}</span></div>
+          </div>
+        </div>
+        <div class="vc-dls">
+          <div class="vc-dl-item">
+            <span class="vc-dl-label">DL Arrivée</span>
+            <span class="vc-dl-val ${dlArrCls}">${dlArrTxt}</span>
+          </div>
+          <div class="vc-dl-item">
+            <span class="vc-dl-label">DL Départ</span>
+            <span class="vc-dl-val ${dlDepCls}">${dlDepTxt}</span>
+          </div>
+        </div>
+        <div class="vc-decomp">
+          <div class="vc-decomp-row">
+            <span class="vc-decomp-lbl">Répercussion</span>
+            <div class="vc-decomp-bar-wrap"><div class="vc-decomp-bar dr-bar rep" style="width:${rep/mx2*100}%"></div></div>
+            <span class="vc-decomp-val" style="color:var(--c-rep)">${rep>0?'+'+rep+' m':'0 m'}</span>
+          </div>
+          <div class="vc-decomp-row">
+            <span class="vc-decomp-lbl">CTOT</span>
+            <div class="vc-decomp-bar-wrap"><div class="vc-decomp-bar dr-bar ctot" style="width:${ctotDl/mx2*100}%"></div></div>
+            <span class="vc-decomp-val" style="color:#f59e0b">${ctotDl>0?'+'+ctotDl+' m':'0 m'}</span>
+          </div>
+          <div class="vc-decomp-row">
+            <span class="vc-decomp-lbl">Clearance</span>
+            <div class="vc-decomp-bar-wrap"><div class="vc-decomp-bar" style="width:${clrDl/mx2*100}%;background:linear-gradient(90deg,#8b5cf6,#a78bfa)"></div></div>
+            <span class="vc-decomp-val" style="color:#8b5cf6">${clrDl>0?'+'+clrDl+' m':'0 m'}</span>
+          </div>
+          <div class="vc-decomp-row">
+            <span class="vc-decomp-lbl">Dépassement</span>
+            <div class="vc-decomp-bar-wrap"><div class="vc-decomp-bar dr-bar dep" style="width:${depass/mx2*100}%"></div></div>
+            <span class="vc-decomp-val" style="color:#10b981">${depass>0?'+'+depass+' m':'0 m'}</span>
+          </div>
+        </div>
+        <div class="vc-causes">${causeTags}</div>
+        <div class="vc-actions">
+          <button class="btn-load" onclick="loadEntry(${e.id})">↩ Charger</button>
+          <button class="btn-del" onclick="deleteEntry(${e.id})">✕ Supprimer</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch(e){ console.warn('Render history error:',e); }
+}
+
+function sortHistory(key){
+  if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=-1;}
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('sort-'+key);
+  if(btn) btn.classList.add('active');
+  renderHistory();
+}
+
+// ── LOAD ENTRY ────────────────────────────────────────────────────────
+async function loadEntry(id){
+  try{
+    let history=[];
+    try{ const r=await window.storage.get(KEY_HISTORY); if(r&&r.value) history=JSON.parse(r.value); } catch(e){ return; }
+    const e=history.find(x=>x.id===id);
+    if(!e) return;
+
+    const map={sta:'sta',ata:'ata',ado:'ado',std:'std',adct:'adct',adc:'adc',atd:'atd',ctot:'ctot'};
+    Object.entries(map).forEach(([k,id])=>{
+      const el=document.getElementById(id);
+      if(el) el.value=e[k]||'';
+    });
+    document.getElementById('vol-num').value=e.volNum||'';
+    document.getElementById('vol-date').value=e.volDate||'';
+    document.getElementById('vol-immat').value=e.volImmat||'';
+    document.getElementById('ttm').value=e.ttm||'';
+    document.getElementById('marge').value=e.marge||'';
+
+    const rows=document.querySelectorAll('#causes-body tr');
+    (e.causes||[]).forEach((c,i)=>{
+      if(!rows[i]) return;
+      rows[i].querySelector('.cause-label').value=c.label||'';
+      rows[i].querySelector('.cause-min').value=c.min||'';
+      rows[i].querySelector('.cause-iata').value=c.iata||'';
+      rows[i].querySelector('.cause-note').value=c.note||'';
+    });
+
+    switchTab('calc');
+    calcAll();
+  } catch(e){ console.warn('Load entry error:',e); }
+}
+
+// ── DELETE ENTRY ──────────────────────────────────────────────────────
+async function deleteEntry(id){
+  try{
+    let history=[];
+    try{ const r=await window.storage.get(KEY_HISTORY); if(r&&r.value) history=JSON.parse(r.value); } catch(e){ return; }
+    history=history.filter(x=>x.id!==id);
+    try{ await window.storage.set(KEY_HISTORY, JSON.stringify(history)); } catch(e){}
+    renderHistory();
+  } catch(e){ console.warn('Delete error:',e); }
+}
+
+// ── CLEAR ALL ─────────────────────────────────────────────────────────
+async function clearHistory(){
+  if(!confirm('Effacer tout l\'historique ?')) return;
+  try{ await window.storage.delete(KEY_HISTORY); } catch(e){}
+  renderHistory();
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────
+function clearSheetUI(){
+  ['sta','ata','ado','std','adct','adc','atd','ctot'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.value=''; el.classList.remove('error','valid');
+  });
+  document.getElementById('vol-num').value='';
+  document.getElementById('vol-date').value=getTodayDDMM();
+  document.getElementById('vol-immat').value='';
+  document.getElementById('ttm').value='';
+  document.getElementById('marge').value='';
+
+  // Reset all presets & toggles
+  activePreset=null;
+  activeAcType=null;
+  crewChange=false;
+  firstwave=false;
+  lastwave=false;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('arr-fields').classList.remove('disabled');
+  document.getElementById('panel-dep').classList.remove('disabled');
+  document.getElementById('field-ctot').classList.remove('disabled');
+  document.getElementById('btn-fw').style.opacity='0.3';
+  document.getElementById('btn-fw').style.pointerEvents='none';
+  document.getElementById('btn-lw').style.opacity='0.3';
+  document.getElementById('btn-lw').style.pointerEvents='none';
+  document.getElementById('actype-bar').style.display='none';
+  applyTheme();
+
+  // Hide computed fields & widget
+  document.getElementById('field-ptd').style.display='none';
+  document.getElementById('field-adct-calc').style.display='none';
+  document.getElementById('field-ttm-prevu').style.display='none';
+  document.getElementById('live-widget').classList.remove('active');
+  if(chronoInterval){clearInterval(chronoInterval);chronoInterval=null;}
+}
+
+function resetAll(){
+  clearSheetUI();
+  try{ localStorage.removeItem(notesKey()); }catch(e){}
+  const ta=document.getElementById('notes-area'); if(ta){ ta.value=''; updateNotesMeta(); }
+  lastCalc={};
+  calcAll();
+}
+
+// ── LIVE CHRONO WIDGET ────────────────────────────────────────────────
+let chronoInterval=null;
+
+function updateLiveWidget(){
+  const ata=parseTime(document.getElementById('ata').value);
+  const ttm=parseInt(document.getElementById('ttm').value)||null;
+  const widget=document.getElementById('live-widget');
+  const volNum=document.getElementById('vol-num').value||'---';
+  document.getElementById('lw-vol').textContent=volNum;
+
+  // Show immat if available
+  const immat=document.getElementById('vol-immat').value||'';
+
+  if(ata===null){ widget.classList.remove('active'); return; }
+  widget.classList.add('active');
+
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const elapsed=nowMin-ata;
+  const elSec=(nowMin-ata)*60+(now.getSeconds());
+  const mm=Math.floor(Math.max(0,elSec)/60);
+  const ss=Math.max(0,elSec)%60;
+  const chronoEl=document.getElementById('lw-chrono');
+  chronoEl.textContent=p2(mm)+':'+p2(ss);
+
+  const fillEl=document.getElementById('lw-ttm-fill');
+  document.getElementById('lw-ttm-txt').textContent=ttm||'--';
+  if(ttm){
+    const pct=Math.min(100,(elapsed/ttm)*100);
+    fillEl.style.width=pct+'%';
+  } else {
+    fillEl.style.width='0%';
+  }
+
+  // PTD display
+  const ptdField=document.getElementById('ptd-display');
+  document.getElementById('lw-ptd').textContent=ptdField?ptdField.textContent:'--:--';
+}
+
+function startChrono(){
+  if(chronoInterval) clearInterval(chronoInterval);
+  chronoInterval=setInterval(updateLiveWidget,1000);
+  updateLiveWidget();
+}
+
+// ── IMMAT AUTO-FORMAT (auto-insert dash after 2 chars) ───────────────
+function formatImmat(el){
+  let v=el.value.toUpperCase().replace(/[^A-Z0-9-]/g,'');
+  // Auto-insert dash after 2 chars if not present
+  if(v.length>2 && !v.includes('-')) v=v.slice(0,2)+'-'+v.slice(2);
+  el.value=v;
+}
+
+// ── FLIGHTRADAR24 TRACKING ────────────────────────────────────────────
+function openFR24(){
+  let immat=document.getElementById('vol-immat').value.trim().toUpperCase();
+  if(!immat){showToast('⚠️ Saisis l\'immatriculation d\'abord');return;}
+  // FR24 format: oe-ive (lowercase, with dash)
+  // If user typed without dash (e.g. OEIVE), insert it after 2 chars
+  let reg=immat;
+  if(!reg.includes('-')&&reg.length>=3) reg=reg.slice(0,2)+'-'+reg.slice(2);
+  window.open('https://www.flightradar24.com/data/aircraft/'+reg.toLowerCase(),'_blank');
+}
+
+// ── AIRLINE THEME ────────────────────────────────────────────────────
+function applyTheme(){
+  document.body.classList.remove('theme-ezy','theme-vly');
+  if(activePreset==='ezy') document.body.classList.add('theme-ezy');
+  else if(activePreset==='vly') document.body.classList.add('theme-vly');
+}
+
+
+// ── QUICK SEARCH (codes DL from calc tab) ────────────────────────────
+let qsCauseTarget=null;
+
+function openQuickSearch(){
+  // Find first empty visible cause row
+  const rows=document.querySelectorAll('#causes-body tr');
+  qsCauseTarget=null;
+  for(let i=0;i<rows.length;i++){
+    if(rows[i].style.display==='none') continue;
+    if(!rows[i].querySelector('.cause-label').value){qsCauseTarget=i;break;}
+  }
+  if(qsCauseTarget===null){
+    // fallback: last visible row
+    for(let i=rows.length-1;i>=0;i--){
+      if(rows[i].style.display!=='none'){qsCauseTarget=i;break;}
+    }
+  }
+  document.getElementById('qs-overlay').classList.add('open');
+  document.getElementById('qs-panel').classList.add('open');
+  const inp=document.getElementById('qs-input');
+  inp.value='';inp.focus();
+  document.getElementById('qs-results').innerHTML='<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:12px">Tapez pour rechercher…</div>';
+}
+
+function closeQuickSearch(){
+  document.getElementById('qs-overlay').classList.remove('open');
+  document.getElementById('qs-panel').classList.remove('open');
+}
+
+async function quickSearchCodes(){
+  const q=document.getElementById('qs-input').value.trim();
+  const container=document.getElementById('qs-results');
+  if(!q||q.length<2){container.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:12px">Tapez pour rechercher…</div>';return;}
+
+  const codes=await getCodes();
+  const qn=normSearch(q);
+  const words=qn.split(/\s+/).filter(w=>w.length>1);
+
+  let results=codes.map(c=>{
+    let score=0;
+    const dn=normSearch(c.desc);
+    const nn=c.notes?normSearch(c.notes):'';
+    if(q===c.code) score+=100;
+    for(const kw of (c.keywords||[])){
+      const kwn=normSearch(kw);
+      if(qn.includes(kwn))score+=15;if(kwn.includes(qn))score+=10;
+      for(const w of words){if(kwn.includes(w))score+=5;}
+    }
+    for(const w of words){if(dn.includes(w))score+=8;if(nn.includes(w))score+=6;}
+    if(dn.includes(qn))score+=20;
+    return{...c,_s:score};
+  }).filter(c=>c._s>0).sort((a,b)=>b._s-a._s).slice(0,10);
+
+  if(!results.length){container.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:12px">Aucun résultat</div>';return;}
+
+  container.innerHTML=results.map(c=>`
+    <div class="qs-item" onclick="applyQuickCode('${c.code}','${c.desc.replace(/'/g,"\\'")}')">
+      <span class="qs-code">${c.code}</span>
+      <span class="qs-desc">${c.desc}</span>
+      <span class="qs-add">+ Ajouter</span>
+    </div>
+  `).join('');
+}
+
+function applyQuickCode(code,desc){
+  const rows=document.querySelectorAll('#causes-body tr');
+  const idx=qsCauseTarget||0;
+  if(rows[idx]){
+    rows[idx].querySelector('.cause-iata').value=code;
+    rows[idx].querySelector('.cause-label').value=desc.split(' / ')[0].split(' – ')[0].substring(0,30);
+    rows[idx].querySelector('.cause-min').focus();
+  }
+  closeQuickSearch();
+  calcAll();
+}
+
+// ── STATS ────────────────────────────────────────────────────────────
+// ── SWIPE BETWEEN TABS ───────────────────────────────────────────────
+let currentTab='calc';
+let touchStartX=0, touchStartY=0;
+const TAB_ORDER=['calc','timecalc','notes','history'];
+
+document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  const dy=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(dx)<80||Math.abs(dy)>Math.abs(dx)*0.7) return; // too short or too vertical
+  const idx=TAB_ORDER.indexOf(currentTab);
+  if(dx<0 && idx<TAB_ORDER.length-1) switchTab(TAB_ORDER[idx+1]);
+  else if(dx>0 && idx>0) switchTab(TAB_ORDER[idx-1]);
+},{passive:true});
+
+
+// ── COLLAPSIBLE PANELS ────────────────────────────────────────────────
+function togglePanel(headEl){
+  const body=headEl.nextElementSibling;
+  if(!body) return;
+  const arrow=headEl.querySelector('.collapse-arrow');
+  body.classList.toggle('collapsed');
+  if(arrow) arrow.classList.toggle('collapsed');
+}
+
+// ── THÈME JOUR / NUIT ─────────────────────────────────────────────────
+function applyDarkMode(dark){
+  document.body.classList.toggle('dark',dark);
+  const btn=document.getElementById('btn-theme');
+  if(btn) btn.textContent=dark?'☀️':'🌙';
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content',dark?'#0f141b':'#f3f5f8');
+}
+function toggleTheme(){
+  const dark=!document.body.classList.contains('dark');
+  try{localStorage.setItem('dl_theme',dark?'dark':'light');}catch(e){}
+  applyDarkMode(dark);
+}
+
+// ── TIMELINE STD (jalons fixes départ) ────────────────────────────────
+const STD_MILESTONES={
+  ezy:[{off:-60,label:'PDC'},{off:-40,label:'Pile 1'},{off:-20,label:'Final',adaptive:true}],
+  vly:[{off:-60,label:'PDC'},{off:-40,label:'CHK'},{off:-20,label:'EMB',adaptive:true}]
+};
+let stdTlInterval=null;
+
+function renderStdTimeline(){
+  const box=document.getElementById('std-timeline');
+  if(!box) return;
+  const std=parseTime(document.getElementById('std').value);
+  if(!activePreset||std===null||lastwave){box.style.display='none';box.innerHTML='';return;}
+
+  // PTD local pour le jalon EMB adaptatif (EMB = PTD - 20)
+  const ata=parseTime(document.getElementById('ata').value);
+  const ttmEff=parseInt(document.getElementById('ttm').value)||null;
+  let ptd=std;
+  if(ata!==null&&ttmEff!==null) ptd=Math.max(ata+ttmEff,std);
+
+  const ms=STD_MILESTONES[activePreset]||[];
+  const pts=ms.map(m=>{
+    const base=m.adaptive?ptd:std;
+    return {t:base+m.off,label:m.label,shifted:!!(m.adaptive&&ptd>std)};
+  });
+  pts.push({t:std,label:'STD',isStd:true});
+  pts.sort((a,b)=>a.t-b.t);
+
+  const start=pts[0].t;
+  const endT=pts[pts.length-1].t;
+  const range=(endT-start)||1;
+
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+  const prog=Math.max(0,Math.min(1,(nowMin-start)/range));
+  const nextIdx=pts.findIndex(p=>nowMin<p.t);
+
+  let html='<div class="stl-wrap">';
+  html+='<div class="stl-track"></div>';
+  html+=`<div class="stl-fill" style="width:${prog*100}%"></div>`;
+  pts.forEach((p,i)=>{
+    const x=(p.t-start)/range*100;
+    const passed=nowMin>=p.t;
+    const cls=(passed?'passed':'')+(i===nextIdx?' next':'')+(p.shifted?' shifted':'');
+    const anchor=i===0?'stl-left':(i===pts.length-1?'stl-right':'');
+    html+=`<div class="stl-time ${anchor} ${cls}" style="left:${x}%">${fmtTime(p.t)}</div>`;
+    html+=`<div class="stl-dot ${cls} ${p.isStd?'std':''}" style="left:${x}%"></div>`;
+    html+=`<div class="stl-label ${anchor} ${cls}" style="left:${x}%">${passed?'✓ ':''}${p.label}</div>`;
+  });
+  const nowAnchor=prog<0.1?'stl-left':(prog>0.9?'stl-right':'');
+  html+=`<div class="stl-cursor" style="left:${prog*100}%"></div>`;
+  html+=`<div class="stl-now ${nowAnchor}" style="left:${prog*100}%">${p2(now.getHours())}:${p2(now.getMinutes())}</div>`;
+  html+='</div>';
+
+  box.style.display='block';
+  box.innerHTML=html;
+}
+
+function startStdTlTimer(){
+  if(stdTlInterval) clearInterval(stdTlInterval);
+  stdTlInterval=setInterval(renderStdTimeline,1000);
+}
+
+// ── NOTES PAR FEUILLE ────────────────────────────────────────────────
+function notesKey(){ return 'dl_notes_'+activeSheetId; }
+
+function refreshNotesUI(){
+  const ta=document.getElementById('notes-area'); if(!ta) return;
+  let v=''; try{ v=localStorage.getItem(notesKey())||''; }catch(e){}
+  ta.value=v;
+  updateNotesMeta();
+}
+function updateNotesMeta(){
+  const ta=document.getElementById('notes-area');
+  const tag=document.getElementById('notes-vol-tag');
+  const cnt=document.getElementById('notes-count');
+  if(tag){ const v=document.getElementById('vol-num').value.trim(); tag.textContent=v?('✈ '+v):''; }
+  if(cnt&&ta) cnt.textContent=ta.value.length?(ta.value.length+' car.'):'';
+}
+function saveNotes(){
+  const ta=document.getElementById('notes-area'); if(!ta) return;
+  try{ localStorage.setItem(notesKey(), ta.value); }catch(e){}
+  updateNotesMeta();
+}
+function insertNoteTime(){
+  const ta=document.getElementById('notes-area'); if(!ta) return;
+  const n=new Date();
+  const stamp=(ta.value&&!ta.value.endsWith('\n')?'\n':'')+p2(n.getHours())+':'+p2(n.getMinutes())+' — ';
+  const pos=(ta.selectionStart!=null)?ta.selectionStart:ta.value.length;
+  ta.value=ta.value.slice(0,pos)+stamp+ta.value.slice(pos);
+  const np=pos+stamp.length;
+  ta.focus(); ta.setSelectionRange(np,np);
+  saveNotes();
+}
+function clearNotes(){
+  if(!confirm('Effacer les notes de cette feuille ?')) return;
+  const ta=document.getElementById('notes-area'); if(ta) ta.value='';
+  try{ localStorage.removeItem(notesKey()); }catch(e){}
+  updateNotesMeta();
+}
+
+// ── TIME CALCULATOR ──────────────────────────────────────────────────
+let tcInput='';      // digits being typed
+let tcVal=0;         // current value in minutes
+let tcPendOp=null;   // pending operation
+let tcPendVal=0;     // value before operation
+let tcJustEqualed=false;
+let tcHistList=[];
+
+function tcInputToMin(s){
+  // Convert digit string to minutes: "200" → 2h00 → 120min, "40" → 0h40 → 40min
+  if(!s) return 0;
+  const padded=s.padStart(3,'0');
+  if(padded.length<=3){
+    const h=parseInt(padded.slice(0,-2)||'0',10);
+    const m=parseInt(padded.slice(-2),10);
+    return h*60+m;
+  }
+  const h=parseInt(padded.slice(0,-2),10);
+  const m=parseInt(padded.slice(-2),10);
+  return h*60+m;
+}
+
+function tcFmt(mins){
+  // Format minutes as H:MM
+  const neg=mins<0;
+  const abs=Math.abs(mins);
+  const h=Math.floor(abs/60);
+  const m=abs%60;
+  return (neg?'-':'')+h+':'+p2(m);
+}
+
+function tcUpdateDisplay(){
+  const displayEl=document.getElementById('tc-display');
+  if(tcInput){
+    // Show raw input formatted as time
+    displayEl.textContent=tcFmt(tcInputToMin(tcInput));
+  } else {
+    displayEl.textContent=tcFmt(tcVal);
+  }
+  // Show expression
+  const exprEl=document.getElementById('tc-expr');
+  if(tcPendOp){
+    const opSymbol=tcPendOp==='+'?'+':tcPendOp==='-'?'−':tcPendOp==='*'?'×':'÷';
+    exprEl.textContent=tcFmt(tcPendVal)+' '+opSymbol;
+  } else {
+    exprEl.textContent='';
+  }
+}
+
+function tcDigit(d){
+  if(tcJustEqualed){tcInput='';tcJustEqualed=false;}
+  if(d==='+24'){
+    // Add 24 hours to current display
+    if(tcInput) tcVal=tcInputToMin(tcInput);
+    tcVal+=24*60;
+    tcInput='';
+    tcUpdateDisplay();
+    return;
+  }
+  if(tcInput.length>=4 && d!=='00') return; // max 4 digits (HH:MM)
+  tcInput+=d;
+  if(tcInput.length>4) tcInput=tcInput.slice(0,4);
+  tcUpdateDisplay();
+}
+
+function tcOp(op){
+  if(tcInput){
+    const inputVal=tcInputToMin(tcInput);
+    if(tcPendOp){
+      tcPendVal=tcCalc(tcPendVal,inputVal,tcPendOp);
+    } else {
+      tcPendVal=inputVal;
+    }
+    tcVal=tcPendVal;
+    tcInput='';
+  } else if(!tcPendOp){
+    tcPendVal=tcVal;
+  }
+  tcPendOp=op;
+  tcJustEqualed=false;
+  tcUpdateDisplay();
+}
+
+function tcCalc(a,b,op){
+  switch(op){
+    case '+': return a+b;
+    case '-': return a-b;
+    case '*': return Math.round(a*b/60); // multiply hours
+    case '/': return b?Math.round(a/b*60):0;
+    default: return b;
+  }
+}
+
+function tcEquals(){
+  if(!tcPendOp) return;
+  const b=tcInput?tcInputToMin(tcInput):0;
+  const a=tcPendVal;
+  const result=tcCalc(a,b,tcPendOp);
+
+  // Build expression string
+  const opSymbol=tcPendOp==='+'?'+':tcPendOp==='-'?'–':tcPendOp==='*'?'×':'÷';
+  const expr=tcFmt(a)+' '+opSymbol+' '+tcFmt(b);
+
+  // Add to history
+  tcHistList.unshift({expr, result:tcFmt(result)});
+  if(tcHistList.length>20) tcHistList.pop();
+  tcRenderHistory();
+
+  tcVal=result;
+  tcInput='';
+  tcPendOp=null;
+  tcPendVal=0;
+  tcJustEqualed=true;
+  tcUpdateDisplay();
+}
+
+function tcClear(){
+  if(tcInput){ tcInput=''; }
+  else { tcVal=0; }
+  tcUpdateDisplay();
+}
+
+function tcAC(){
+  tcInput=''; tcVal=0; tcPendOp=null; tcPendVal=0; tcJustEqualed=false;
+  tcUpdateDisplay();
+}
+
+function tcBackspace(){
+  if(tcInput.length>0){
+    tcInput=tcInput.slice(0,-1);
+  } else {
+    tcVal=0;
+  }
+  tcUpdateDisplay();
+}
+
+function tcNow(){
+  const now=new Date();
+  const mins=now.getHours()*60+now.getMinutes();
+  if(tcPendOp){
+    // Use as second operand
+    tcInput='';
+    tcVal=mins;
+    tcPendVal=tcCalc(tcPendVal,mins,tcPendOp);
+    tcVal=tcPendVal;
+    tcPendOp=null;
+    tcJustEqualed=true;
+  } else {
+    tcVal=mins;
+    tcInput='';
+    tcJustEqualed=true;
+  }
+  tcUpdateDisplay();
+}
+
+function tcRenderHistory(){
+  const container=document.getElementById('tc-history');
+  container.innerHTML=tcHistList.map((h,i)=>`
+    <div class="tc-hist-item" onclick="tcLoadHist(${i})">
+      <span class="tc-hist-expr">${h.expr}</span>
+      <span class="tc-hist-result">= ${h.result}</span>
+    </div>
+  `).join('');
+}
+
+function tcLoadHist(i){
+  const h=tcHistList[i];
+  if(!h) return;
+  // Parse result back to minutes
+  const parts=h.result.match(/^(-?)(\d+):(\d{2})$/);
+  if(parts){
+    const neg=parts[1]==='-';
+    tcVal=(parseInt(parts[2],10)*60+parseInt(parts[3],10))*(neg?-1:1);
+    tcInput='';
+    tcPendOp=null;
+    tcPendVal=0;
+    tcJustEqualed=true;
+    tcUpdateDisplay();
+  }
+}
+
+
+// ── EXPORT/IMPORT ─────────────────────────────────────────────────────
+function showToast(msg){
+  let t=document.getElementById('import-toast');
+  if(!t){t=document.createElement('div');t.id='import-toast';t.className='import-toast';document.body.appendChild(t);}
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+async function exportData(){
+  try{
+    const data={
+      exportDate:new Date().toISOString(),
+      version:'2.1',
+      current:null,
+      history:[],
+      codes:[]
+    };
+    try{const r=await window.storage.get(currentKey());if(r&&r.value) data.current=JSON.parse(r.value);}catch(e){}
+    try{const r=await window.storage.get(KEY_HISTORY);if(r&&r.value) data.history=JSON.parse(r.value);}catch(e){}
+    try{const r=await window.storage.get(KEY_CODES);if(r&&r.value) data.codes=JSON.parse(r.value);}catch(e){}
+
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const d=new Date();
+    a.href=url;
+    a.download='DL_backup_'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'_'+p2(d.getHours())+p2(d.getMinutes())+'.json';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('✅ Export réussi – '+((data.history||[]).length)+' rotation(s)');
+  }catch(e){showToast('❌ Erreur export');console.error(e);}
+}
+
+async function importData(event){
+  const file=event.target.files[0];
+  if(!file) return;
+  try{
+    const text=await file.text();
+    const data=JSON.parse(text);
+    if(!data.version){showToast('❌ Fichier non reconnu');return;}
+
+    let imported=0;
+    if(data.current){
+      await window.storage.set(currentKey(),JSON.stringify(data.current));
+      imported++;
+    }
+    if(data.history&&data.history.length){
+      // Merge: keep existing + add new (avoid duplicates by id)
+      let existing=[];
+      try{const r=await window.storage.get(KEY_HISTORY);if(r&&r.value)existing=JSON.parse(r.value);}catch(e){}
+      const existingIds=new Set(existing.map(e=>e.id));
+      const newEntries=data.history.filter(e=>!existingIds.has(e.id));
+      const merged=[...newEntries,...existing].sort((a,b)=>b.id-a.id).slice(0,200);
+      await window.storage.set(KEY_HISTORY,JSON.stringify(merged));
+      imported+=newEntries.length;
+    }
+    if(data.codes&&data.codes.length){
+      // Merge custom codes (id > 1000 = user-added)
+      let existing=[];
+      try{const r=await window.storage.get(KEY_CODES);if(r&&r.value)existing=JSON.parse(r.value);}catch(e){existing=DEFAULT_CODES;}
+      const existingIds=new Set(existing.map(c=>c.id));
+      const newCodes=data.codes.filter(c=>!existingIds.has(c.id));
+      await window.storage.set(KEY_CODES,JSON.stringify([...existing,...newCodes]));
+    }
+
+    // Restore current view
+    await restoreCurrent();
+    renderHistory();
+    showToast('✅ Import réussi – '+imported+' élément(s) ajouté(s)');
+  }catch(e){showToast('❌ Erreur import : fichier invalide');console.error(e);}
+  event.target.value=''; // reset file input
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+function getTodayDDMM(){ const d=new Date(); return p2(d.getDate())+'/'+p2(d.getMonth()+1); }
+
+(async()=>{
+  // First & Last disabled until a preset is selected
+  document.getElementById('btn-fw').style.opacity='0.3';
+  document.getElementById('btn-fw').style.pointerEvents='none';
+  document.getElementById('btn-lw').style.opacity='0.3';
+  document.getElementById('btn-lw').style.pointerEvents='none';
+  loadSheets();
+  await restoreCurrent();
+  renderSheetsBar();
+  // Pre-fill date if empty
+  if(!document.getElementById('vol-date').value) document.getElementById('vol-date').value=getTodayDDMM();
+  const now=new Date();
+  document.getElementById('sessionInfo').textContent=
+    p2(now.getHours())+':'+p2(now.getMinutes());
+  try{ applyDarkMode(localStorage.getItem('dl_theme')==='dark'); }catch(e){ applyDarkMode(false); }
+  startStdTlTimer();
+})();
+</script>
+</body>
+</html>
