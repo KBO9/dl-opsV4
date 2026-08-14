@@ -604,7 +604,7 @@
 
   /* ── TIMELINE STD (jalons fixes) ── */
   #std-timeline { margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
-  .stl-wrap { position:relative; height:66px; }
+  .stl-wrap { position:relative; height:80px; }
   .stl-track { position:absolute; top:34px; left:0; right:0; height:4px; background:var(--bg3); border-radius:2px; }
   body.dark .stl-track { background:var(--border); }
   .stl-fill { position:absolute; top:34px; left:0; height:4px; border-radius:2px; background:linear-gradient(90deg,var(--accent3),var(--accent)); transition:width 1s linear; }
@@ -1729,14 +1729,13 @@ function calcAll(){
 
     if(ata!==null&&ttm!==null&&std!==null){
       ptd=Math.max(ata+ttm,std);
-      // Si ATA <= STA, pas de répercussion → PTD = STD, pas besoin d'afficher
-      if(sta!==null&&ata<=sta){
+      // Masquer seulement s'il n'y a réellement aucune modification (ATA + TTM ≤ STD)
+      if(ptd<=std){
         ptdField.style.display='none';
-        ptd=std;
       } else {
         ptdDisplay.textContent=fmtTime(ptd);
         ptdField.style.display='flex';
-        ptdField.classList.toggle('highlight',ptd>std);
+        ptdField.classList.add('highlight');
       }
     } else if(ata!==null&&ttm!==null){
       ptd=ata+ttm;
@@ -2414,14 +2413,19 @@ function renderStdTimeline(){
   let html='<div class="stl-wrap">';
   html+='<div class="stl-track"></div>';
   html+=`<div class="stl-fill" style="width:${prog*100}%"></div>`;
+  let lastX=-99, lastRow=0;
   pts.forEach((p,i)=>{
     const x=(p.t-start)/range*100;
+    // Anti-collision : alterner de ligne si le jalon précédent est trop proche
+    const row=(x-lastX<16)?(lastRow===0?1:0):0;
+    lastX=x; lastRow=row;
     const passed=nowMin>=p.t;
     const cls=(passed?'passed':'')+(i===nextIdx?' next':'')+(p.shifted?' shifted':'');
     const anchor=i===0?'stl-left':(i===pts.length-1?'stl-right':'');
-    html+=`<div class="stl-time ${anchor} ${cls}" style="left:${x}%">${fmtTime(p.t)}</div>`;
+    const tTop=row?2:14, lTop=row?60:48;
+    html+=`<div class="stl-time ${anchor} ${cls}" style="left:${x}%;top:${tTop}px">${fmtTime(p.t)}</div>`;
     html+=`<div class="stl-dot ${cls} ${p.isStd?'std':''}" style="left:${x}%"></div>`;
-    html+=`<div class="stl-label ${anchor} ${cls}" style="left:${x}%">${passed?'✓ ':''}${p.label}</div>`;
+    html+=`<div class="stl-label ${anchor} ${cls}" style="left:${x}%;top:${lTop}px">${passed?'✓ ':''}${p.label}</div>`;
   });
   const nowAnchor=prog<0.1?'stl-left':(prog>0.9?'stl-right':'');
   html+=`<div class="stl-cursor" style="left:${prog*100}%"></div>`;
