@@ -1756,12 +1756,13 @@ function calcAll(){
       adctCalcField.style.display='none';
     }
 
-    // 3. Porte attendue (PTD - marge)
+    // 3. Porte attendue = (PTD ou STD) - marge
     let porteAttendue=null;
-    if(ptd!==null&&marge!==null){
-      porteAttendue=ptd-marge;
-      setCard('res-porte',fmtTime(porteAttendue),'PTD – '+marge+' min','ok');
-    } else setCard('res-porte','--:--','PTD + marge requis','na');
+    const refPorte = (ptd!==null) ? ptd : std;
+    if(refPorte!==null&&marge!==null){
+      porteAttendue=refPorte-marge;
+      setCard('res-porte',fmtTime(porteAttendue),(ptd!==null?'PTD':'STD')+' – '+marge+' min','ok');
+    } else setCard('res-porte','--:--','STD + marge requis','na');
 
     // 5. Retard départ
     let dlDep=null;
@@ -1786,7 +1787,7 @@ function calcAll(){
     let rep=0, dlCtotVal=0, depass=0, clearance=0;
     let repAbsorbed=false;
 
-    if(dlDep>0&&sta!==null&&ata!==null&&std!==null&&atd!==null){
+    if(dlDep>0&&std!==null&&atd!==null){
       // 1. REP = portion du retard causée par l'entrant
       const ptdDelay=ptd!==null?Math.max(0,ptd-std):0;
       rep=Math.min(dlDep, ptdDelay);
