@@ -626,6 +626,69 @@
   .stl-now { position:absolute; top:0; transform:translateX(-50%); font-family:var(--mono); font-size:9px; font-weight:700; color:#fff; background:var(--red); padding:1px 7px; border-radius:8px; transition:left 1s linear; letter-spacing:.5px; z-index:3; }
   @keyframes stlPulse { 0%,100%{ box-shadow:0 0 0 3px rgba(47,107,222,.2);} 50%{ box-shadow:0 0 0 7px rgba(47,107,222,.06);} }
 
+  /* ── ONGLET DL VUELING ── */
+  .vy-chips { display:flex; gap:5px; overflow-x:auto; padding-bottom:6px; scrollbar-width:none; }
+  .vy-chips::-webkit-scrollbar { display:none; }
+  .vy-chip { flex:0 0 auto; border:1px solid var(--gc,var(--border)); background:var(--gcb,var(--bg2)); color:var(--gc,var(--text-dim)); font-family:var(--sans); font-size:11px; font-weight:600; padding:5px 10px; border-radius:16px; cursor:pointer; white-space:nowrap; }
+  .vy-chip.on { background:var(--gc,var(--accent)); border-color:var(--gc,var(--accent)); color:var(--bg2); }
+  body.dark .vy-chip.on { color:#0f141b; }
+  .vy-chip-r { font-family:var(--mono); font-size:9px; opacity:.7; }
+  .vy-count { font-family:var(--mono); font-size:9px; color:var(--text-dim); margin:2px 0 6px; }
+  .vy-card { border:1px solid var(--border); background:var(--bg2); border-radius:var(--radius-sm); margin-bottom:5px; overflow:hidden; }
+  .vy-card.open { border-color:var(--accent); box-shadow:var(--shadow-sm); }
+  .vy-head { display:flex; align-items:flex-start; gap:9px; padding:9px 10px; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .vy-code { flex:0 0 auto; min-width:30px; text-align:center; font-family:var(--mono); font-size:15px; font-weight:700; color:var(--gc,var(--accent)); background:var(--gcb,var(--bg3)); border-radius:5px; padding:3px 6px; }
+  .vy-card { border-left-width:3px; border-left-color:var(--gc,var(--border)); }
+  .vy-card.open { border-color:var(--border); border-left-color:var(--gc,var(--accent)); }
+
+  /* Palette par groupe — mode jour */
+  .g-vlg { --gc:#b8860b; --gcb:rgba(255,206,0,.20); }
+  .g-pax { --gc:#2f6bde; --gcb:rgba(47,107,222,.12); }
+  .g-frt { --gc:#a16207; --gcb:rgba(161,98,7,.12); }
+  .g-rmp { --gc:#0e7490; --gcb:rgba(14,116,144,.12); }
+  .g-tec { --gc:#dc2626; --gcb:rgba(220,38,38,.10); }
+  .g-dmg { --gc:#be185d; --gcb:rgba(190,24,93,.10); }
+  .g-sys { --gc:#7c3aed; --gcb:rgba(124,58,237,.11); }
+  .g-ops { --gc:#4338ca; --gcb:rgba(67,56,202,.11); }
+  .g-met { --gc:#0284c7; --gcb:rgba(2,132,199,.12); }
+  .g-atf { --gc:#ea580c; --gcb:rgba(234,88,12,.12); }
+  .g-apt { --gc:#15803d; --gcb:rgba(21,128,61,.12); }
+  .g-rea { --gc:#475569; --gcb:rgba(71,85,105,.12); }
+  .g-div { --gc:#6b7280; --gcb:rgba(107,114,128,.12); }
+
+  /* Palette par groupe — mode nuit */
+  body.dark .g-vlg { --gc:#ffd84d; --gcb:rgba(255,206,0,.16); }
+  body.dark .g-pax { --gc:#7fb0ff; --gcb:rgba(127,176,255,.14); }
+  body.dark .g-frt { --gc:#e0a83c; --gcb:rgba(224,168,60,.14); }
+  body.dark .g-rmp { --gc:#3ec6e0; --gcb:rgba(62,198,224,.14); }
+  body.dark .g-tec { --gc:#ff8080; --gcb:rgba(255,128,128,.14); }
+  body.dark .g-dmg { --gc:#f472b6; --gcb:rgba(244,114,182,.14); }
+  body.dark .g-sys { --gc:#b490ff; --gcb:rgba(180,144,255,.15); }
+  body.dark .g-ops { --gc:#93a4ff; --gcb:rgba(147,164,255,.15); }
+  body.dark .g-met { --gc:#5cc4f5; --gcb:rgba(92,196,245,.14); }
+  body.dark .g-atf { --gc:#ffa04d; --gcb:rgba(255,160,77,.14); }
+  body.dark .g-apt { --gc:#5ee68a; --gcb:rgba(94,230,138,.13); }
+  body.dark .g-rea { --gc:#9fb0c4; --gcb:rgba(159,176,196,.13); }
+  body.dark .g-div { --gc:#a0aab8; --gcb:rgba(160,170,184,.13); }
+  .vy-txt { flex:1; min-width:0; }
+  .vy-fr { font-size:13px; font-weight:600; color:var(--text-bright); line-height:1.3; }
+  .vy-en { font-family:var(--mono); font-size:10px; color:var(--text-dim); margin-top:2px; text-transform:uppercase; letter-spacing:.3px; }
+  .vy-hit { font-size:11px; color:var(--text-dim); margin-top:4px; padding-left:7px; border-left:2px solid var(--border); }
+  .vy-arrow { flex:0 0 auto; color:var(--text-dim); font-size:11px; padding-top:3px; }
+  .vy-body { padding:0 10px 10px; border-top:1px dashed var(--border); }
+  .vy-body h4 { font-family:var(--cond); font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin:9px 0 5px; }
+  .vy-body ul { margin:0; padding-left:16px; }
+  .vy-body li { font-size:12.5px; line-height:1.5; margin-bottom:3px; }
+  .vy-note { font-size:12px; line-height:1.45; background:var(--bg3); border-left:3px solid var(--gc,var(--accent)); border-radius:0 5px 5px 0; padding:7px 9px; margin-top:7px; }
+  .vy-note.vy-alert { background:rgba(220,38,38,.07); border-left-color:var(--red); }
+  body.dark .vy-note.vy-alert { background:rgba(248,113,113,.1); }
+  .vy-refs { font-family:var(--mono); font-size:11px; color:var(--gc,var(--accent)); margin-top:8px; }
+  .vy-copy { width:100%; margin-top:9px; background:var(--gc,var(--accent)); border:0; color:var(--bg2); font-family:var(--mono); font-size:11px; padding:8px; border-radius:var(--radius-sm); cursor:pointer; }
+  .vy-empty { text-align:center; padding:26px 12px; color:var(--text-dim); font-size:13px; }
+  .vy-empty span { font-size:11px; opacity:.75; }
+  .vy-foot { font-size:9.5px; color:var(--text-dim); line-height:1.4; margin-top:10px; padding-top:8px; border-top:1px solid var(--border); }
+  #vy-list mark { background:var(--accent2); color:#1b2430; border-radius:2px; padding:0 1px; }
+
   /* ── QUICK SEARCH OVERLAY (code DL from calc) ── */
   .quick-search-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:150; }
   .quick-search-overlay.open { display:block; }
@@ -638,7 +701,7 @@
   .qs-results { flex:1; overflow-y:auto; padding:8px; display:flex; flex-direction:column; gap:6px; }
   .qs-item { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
   .qs-item:active { background:var(--bg2); border-color:var(--accent); }
-  .qs-code { font-family:var(--mono); font-size:18px; font-weight:800; color:var(--accent); min-width:40px; }
+  .qs-code { font-family:var(--mono); font-size:18px; font-weight:800; color:var(--gc,var(--accent)); background:var(--gcb,transparent); border-radius:5px; padding:2px 6px; min-width:40px; text-align:center; }
   .qs-desc { font-size:12px; color:var(--text); flex:1; }
   .qs-add { font-family:var(--mono); font-size:10px; color:var(--accent3); background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2); border-radius:4px; padding:4px 8px; cursor:pointer; white-space:nowrap; }
 
@@ -773,6 +836,7 @@
   <button class="tab-btn active" onclick="switchTab('calc')">⚙️ <span class="tab-label">Calcul</span></button>
   <button class="tab-btn" onclick="switchTab('timecalc')">🕐 <span class="tab-label">Temps</span></button>
   <button class="tab-btn" onclick="switchTab('notes')">📝 <span class="tab-label">Notes</span></button>
+  <button class="tab-btn" onclick="switchTab('vy')">📕 <span class="tab-label">DL VY</span></button>
   <button class="tab-btn" onclick="switchTab('history')">🗄️ <span class="tab-label">Hist.</span></button>
 </div>
 
@@ -960,6 +1024,31 @@
 </div>
 </div><!-- end tab-notes -->
 
+<!-- ══ TAB: DL VUELING ══ -->
+<div class="tab-content" id="tab-vy">
+<div style="max-width:960px;margin:0 auto">
+  <div class="panel">
+    <div class="panel-head" style="cursor:default">
+      <span class="icon">📕</span><span class="title">Codes retard Vueling</span>
+      <span style="margin-left:auto;font-family:var(--mono);font-size:9px;font-weight:700;background:var(--accent2);color:#1b2430;padding:2px 7px;border-radius:3px">GOM Rev26</span>
+    </div>
+    <div class="panel-body" style="padding:8px">
+      <div style="position:relative;margin-bottom:6px">
+        <input type="search" id="vy-q" placeholder="Code, mot-clé FR ou EN — ex. 93, dégivrage, GPU"
+               autocomplete="off" autocapitalize="off" spellcheck="false"
+               oninput="vyOnInput(this.value)"
+               style="width:100%;text-align:left;font-family:var(--sans);font-size:14px;padding:10px 34px 10px 12px;letter-spacing:0">
+        <button id="vy-clear" onclick="vyClear()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--text-dim);font-size:18px;cursor:pointer;padding:4px 6px">✕</button>
+      </div>
+      <div id="vy-chips" class="vy-chips"></div>
+      <div id="vy-count" class="vy-count"></div>
+      <div id="vy-list"></div>
+      <div class="vy-foot">Copie de travail non contrôlée (GOM Annexe E Rev26). En cas d'écart, le manuel Vueling en vigueur fait foi.</div>
+    </div>
+  </div>
+</div>
+</div><!-- end tab-vy -->
+
 <!-- ══ TAB: HISTORIQUE ══ -->
 <div class="tab-content" id="tab-history">
 <div class="history-wrap">
@@ -1127,128 +1216,592 @@ function p2(v){ return String(v).padStart(2,'0'); }
 
 // ── TABS ──────────────────────────────────────────────────────────────
 function switchTab(name) {
-  const tabs=['calc','timecalc','notes','history'];
+  const tabs=['calc','timecalc','notes','vy','history'];
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active', tabs[i]===name));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active', c.id==='tab-'+name));
   if(name==='history') renderHistory();
   if(name==='notes') refreshNotesUI();
+  if(name==='vy') refreshVyUI();
   window.scrollTo({top:0,behavior:'smooth'});
   currentTab=name;
 }
 
 // ── CODES DL ──────────────────────────────────────────────────────────
+// ══ BASE DE DONNÉES DL VUELING — GOM Annexe E Rev26 ══════════════════
+const VY_GROUPS = [
+  {k:"vlg", n:"Codes Vueling", r:"1 – 10"},
+  {k:"pax", n:"Passagers & bagages", r:"11 – 19"},
+  {k:"frt", n:"Fret & poste", r:"21 – 29"},
+  {k:"rmp", n:"Piste & assistance", r:"31 – 39"},
+  {k:"tec", n:"Technique", r:"41 – 49"},
+  {k:"dmg", n:"Dommages", r:"51 – 54"},
+  {k:"sys", n:"Systèmes", r:"55 – 59"},
+  {k:"ops", n:"Ops & équipages", r:"61 – 69"},
+  {k:"met", n:"Météo", r:"71 – 77"},
+  {k:"atf", n:"ATFM", r:"81 – 84"},
+  {k:"apt", n:"Aéroport & autorités", r:"85 – 89"},
+  {k:"rea", n:"Réactionnaire", r:"91 – 96"},
+  {k:"div", n:"Divers", r:"97 – 99"}
+];
+
+const VY_DATA = [
+/* ---------- 1. CODES PROPRES VUELING ---------- */
+{c:"1",g:"vlg",t:"LATE PASSENGER CABIN DELIVERY",
+ fr:"Cabine libérée en retard pour l'embarquement",
+ i:["a) Tâches préflight de plus de 10 minutes.",
+    "b) Préflight en 10 minutes ou moins, mais escale trop courte pour libérer la cabine à l'heure prévue :",
+    "H-30 (escale 45 min et +)","H-25 (escale 40 min)","H-22 (escale 35 min)"],
+ k:"cabine preflight preparation equipage libere retard embarquement h-30 h-25 h-22 touchdown"},
+{c:"2",g:"vlg",t:"COMMERCIAL SLOT DISCREPANCY",
+ fr:"Écart entre l'horaire commercial et le slot",
+ n:[{k:"note",t:"L'écart de slot n'entre pas dans le code 16. S'applique aussi si le plan de vol est annulé par l'aéroport pour écart de slot. À appliquer toujours, avant le code 93."}],
+ r:["16","93"],
+ k:"slot creneau commercial discrepance ecart plan de vol annule"},
+{c:"3",g:"vlg",t:"LATE CREW PICK-UP",
+ fr:"Navette équipage en retard (hors aéroport)",
+ i:["Ramassage équipage tardif à l'extérieur de l'aéroport."],
+ k:"navette taxi equipage crew pick up hotel transport retard"},
+{c:"4",g:"vlg",t:"SLOW BOARDING, DE-/BOARDING DUE to HIGH VOLUME PAX TO ASSISTS",
+ fr:"Embarquement/débarquement ralenti par un fort volume de PMR",
+ i:["a) Nombreux passagers WCH ; PSM erroné ou non envoyé par l'escale précédente."],
+ n:[{k:"attn",t:"Toujours indiquer le nombre et le type de fauteuil en SI (WCH-R / -C / -S)."}],
+ k:"pmr wch fauteuil roulant assistance embarquement lent psm handicap"},
+{c:"5",g:"vlg",t:"BAGGAGE SEARCH/OFFLOAD",
+ fr:"Recherche ou débarquement de bagage",
+ i:["Ex. recherche d'un bagage enregistré suite à un pax en retard ou no-show à la porte."],
+ k:"bagage recherche debarquement offload no show porte soute deconsignation"},
+{c:"6",g:"vlg",t:"EXCESS HAND BAGGAGE AT GATE/ON BOARD",
+ fr:"Excédent de bagages cabine à la porte ou à bord",
+ i:["Bagages de la porte vers la soute."],
+ k:"bagage cabine excedent porte soute gate bags"},
+{c:"7",g:"vlg",t:"LATE ACCOMODATION OF PASSENGERS ON BOARD",
+ fr:"Installation des passagers à bord trop lente",
+ i:["a) Débarquement lent","b) Installation lente"],
+ k:"installation placement passagers lent debarquement cabine"},
+{c:"8",g:"vlg",t:"FLIGHT TIME HIGHER THAN SCHEDULED TIME",
+ fr:"Temps de vol supérieur à l'horaire programmé",
+ k:"temps de vol superieur programme flight time"},
+{c:"9",g:"vlg",t:"SCHEDULED GROUND TIME LESS THAN DECLARED MINIMUN GROUNDTIME",
+ fr:"Escale programmée inférieure au temps d'escale minimum déclaré",
+ k:"escale ttm minimum ground time programme inferieur touchdown"},
+{c:"10",g:"vlg",t:"NOT IN USE BY VLG",fr:"Non utilisé par Vueling",off:1,
+ k:"non utilise inutilise"},
+
+/* ---------- 2. PASSAGERS & BAGAGES ---------- */
+{c:"11",g:"pax",t:"LATE CHECK-IN, acceptance after deadline",
+ fr:"Enregistrement accepté après la limite",
+ i:["Sauf autorisation de Vueling."],
+ k:"enregistrement tardif limite deadline acceptation checkin comptoir"},
+{c:"12",g:"pax",t:"LATE CHECK-IN, congestion in check-in-area (handling agent fault)",
+ fr:"Engorgement de l'enregistrement, faute de l'assistant",
+ i:["a) Manque d'agents d'enregistrement","b) File d'attente au comptoir d'enregistrement ou de billetterie en hall départ"],
+ k:"file attente comptoir engorgement enregistrement manque agent handling"},
+{c:"13",g:"pax",t:"CHECK-IN ERROR, passenger and baggage",
+ fr:"Erreur d'enregistrement passagers ou bagages",
+ i:["a) Carte d'embarquement en double / chiffres erronés","b) Erreur sur les chiffres bagages"],
+ k:"erreur enregistrement carte embarquement double chiffres bagages"},
+{c:"14",g:"pax",t:"OVERSALES, booking errors",
+ fr:"Surréservation ou erreur de réservation",
+ i:["a) Débarquement de passagers OK (ex. sous-affrètement de capacité inférieure)",
+    "b) Erreurs de réservation / surbooking",
+    "c) Débarquement des bagages liés à la gestion du surbooking"],
+ k:"surbooking overbooking surreservation debarquement pax reservation sous affretement"},
+{c:"15",g:"pax",t:"BOARDING, discrepancies, and paging",
+ fr:"Embarquement : écarts de comptage et appels passagers",
+ i:["Code applicable aux activités postérieures à l'appel départ.",
+    "a) Manque d'agents ou agents en retard suite à chevauchement non planifié",
+    "b) Contrôle/recomptage des cartes d'embarquement à bord ou en porte suite à écart entre le devis et les pax à bord",
+    "c) Erreur de l'agent de porte",
+    "d) Contrôle passeport/visa à la porte"],
+ k:"embarquement comptage recomptage appel paging porte passeport visa ecart loadsheet"},
+{c:"16",g:"pax",t:"COMMERCIAL PUBLICITY, passenger convenience",
+ fr:"Décision commerciale, confort passager",
+ i:["Ex. maladie/décès (vol arrivée ou départ), VIP, attente de passagers (écart entre l'heure commerciale et le slot opérationnel).",
+    "a) Bébés et enfants non accompagnés",
+    "b) Expulsés, pax inadmissibles ou détenus",
+    "c) Fort volume de personnes âgées",
+    "d) Incidents en porte liés à la perception des ancillaires"],
+ n:[{k:"attn",t:"Exclut les passagers perturbateurs, à coder en 85."}],
+ r:["85"],
+ k:"commercial vip maladie deces umnr enfant seul inadmissible expulse ancillaire attente pax"},
+{c:"17",g:"pax",t:"CATERING ORDER, late or incorrect order given to supplier",
+ fr:"Commande catering tardive ou erronée",
+ i:["a) Up-catering","b) Commande erronée transmise au fournisseur"],
+ n:[{k:"attn",t:"Si seuls les plateaux équipage manquent, utiliser le code 65."}],
+ r:["65"],
+ k:"catering commande fournisseur upcatering plateaux repas erreur"},
+{c:"18",g:"pax",t:"BAGGAGE PROCESSING, delivery of baggage after deadline",
+ fr:"Traitement bagages : livraison après la limite",
+ n:[{k:"note",t:"Si le retard vient du tri bagages en panne ou d'une capacité insuffisante et que le système appartient à l'aéroport, utiliser le code 87."},
+    {k:"note",t:"Si le retard vient du personnel de l'aéroport (ex. à CDG) qui ne charge pas les bagages sur les chariots et retarde donc l'assistant, utiliser le code 18. Dans les deux cas, ajouter l'info en SI."}],
+ r:["87"],
+ k:"bagages tri livraison chariot cdg retard soute galerie bhs"},
+{c:"19",g:"pax",t:"LATE ARRVAL OF THE PMR ASSISTENCE",
+ fr:"Assistance PMR arrivée en retard",
+ i:["Ex. assistance PMR tardive, PSM erroné ou non envoyé par l'escale précédente."],
+ n:[{k:"attn",t:"Toujours indiquer le nombre et le type de fauteuil en SI (WCH-R / -C / -S)."}],
+ k:"pmr assistance retard wch fauteuil psm gil handicap"},
+
+/* ---------- FRET & POSTE ---------- */
+{c:"21",g:"frt",t:"DOCUMENTATION, late or incorrect cargo doc",fr:"Documentation fret tardive ou incorrecte",
+ k:"fret cargo documentation lta awb papier"},
+{c:"22",g:"frt",t:"LATE POSITIONING, late delivery of cargo to apt/ac",fr:"Fret livré en retard à l'aéroport ou à l'avion",
+ k:"fret cargo livraison retard positionnement avion"},
+{c:"23",g:"frt",t:"LATE ACCEPTANCE, cargo acceptance after deadline",fr:"Fret accepté après la limite",
+ k:"fret cargo acceptation limite deadline"},
+{c:"24",g:"frt",t:"INADEQUATE PACKING, cargo repackaging/re-labelling",fr:"Emballage fret inadéquat, réemballage ou réétiquetage",
+ k:"fret emballage etiquette repackaging colis"},
+{c:"25",g:"frt",t:"OVERSALES, load in excess of sealable load capacity",fr:"Fret vendu au-delà de la capacité d'emport",
+ k:"fret capacite emport surcharge oversales"},
+{c:"26",g:"frt",t:"LOAD/UNLOAD, lack to staff/equipment for cargo",fr:"Manque de personnel ou de matériel pour le fret",
+ k:"fret chargement personnel materiel manque"},
+{c:"27",g:"frt",t:"DOCUMENTATION, PACKING (MAIL ONLY)",fr:"Poste : documentation et emballage",
+ k:"poste mail courrier documentation emballage"},
+{c:"28",g:"frt",t:"LATE POSITIONING (MAIL ONLY), late delivery",fr:"Poste livrée en retard",
+ k:"poste mail courrier livraison retard"},
+{c:"29",g:"frt",t:"LATE ACCEPTANCE (MAIL ONLY), after deadline",fr:"Poste acceptée après la limite",
+ k:"poste mail courrier acceptation limite"},
+
+/* ---------- 3. PISTE & ASSISTANCE ---------- */
+{c:"31",g:"rmp",t:"AIRCRAFT DOCUMENTATION, late/inaccurate, weight & balance, General Declaration Passenger Manifest, etc.",
+ fr:"Documentation avion tardive ou erronée (devis de masse, GENDEC, LIR)",
+ i:["a) Absence de coordinateur ou coordinateur en retard",
+    "b) GENDEC ou devis de masse tardif ou erroné",
+    "c) Instruction de chargement (LIR) tardive ou erronée",
+    "d) Contrôle load control",
+    "e) Repositionnement de passagers pour raisons de centrage"],
+ k:"loadsheet devis masse centrage gendec lir instruction chargement coordinateur load control repositionnement"},
+{c:"32",g:"rmp",t:"LOADING/UNLOADING bulky, special load",
+ fr:"Chargement/déchargement hors gabarit ou charge spéciale",
+ i:["a) Loading Report du load master transmis tardivement au coordinateur",
+    "b) Manque de bagagistes ou bagagistes en retard",
+    "c) Charge encombrante (ex. instruments de musique ; explication à joindre)"],
+ k:"hors gabarit bulky charge speciale instrument musique loading report bagagiste"},
+{c:"33",g:"rmp",t:"LOADING EQUIPMENT, lack of or breakdown",
+ fr:"Matériel de chargement manquant ou en panne",
+ i:["a) Manque de matériel (ex. tapis bagages)"],
+ k:"tapis convoyeur materiel chargement panne manque loader"},
+{c:"34",g:"rmp",t:"SERVICING EQUIPMENT, late, lack of/or breakdown, lack of staff",
+ fr:"Matériel de servitude en retard, manquant ou en panne / manque de personnel",
+ i:["a) Avitaillement en eau (à mettre en SI)",
+    "b) Vidange toilettes (à mettre en SI)",
+    "c) Manque de personnel ou personnel en retard",
+    "d) Climatisation/chauffage avion (ACU)",
+    "e) Bus passagers",
+    "f) Groupe électrogène (GPU)",
+    "g) Escaliers passagers ou de service",
+    "h) Navette équipage tardive"],
+ k:"gpu groupe acu clim bus escalier passerelle eau toilette potable vidange servitude personnel"},
+{c:"35",g:"rmp",t:"AIRCRAFT CLEANING",
+ fr:"Nettoyage avion",
+ i:["a) Avitaillement en eau (si réalisé par le nettoyage sur votre escale)",
+    "b) Vidange toilettes (si réalisée par le nettoyage sur votre escale)",
+    "c) Manque d'agents de nettoyage ou agents en retard",
+    "d) Nettoyage cabine exceptionnel"],
+ k:"nettoyage cleaning cabine eau toilette exceptionnel agent"},
+{c:"36",g:"rmp",t:"FUELING/DEFUELING, fuel supplier",
+ fr:"Avitaillement carburant, fournisseur",
+ i:["a) Camion carburant en retard",
+    "b) Assistance retardée par l'avitaillement",
+    "c) Chiffres carburant erronés saisis par l'avitailleur"],
+ n:[{k:"attn",t:"À ne pas utiliser lorsque du carburant supplémentaire est commandé après la fin de l'avitaillement initial : utiliser le code 62."}],
+ r:["62"],
+ k:"carburant fuel avitaillement camion citerne petrolier chiffres"},
+{c:"37",g:"rmp",t:"CATERING, late delivery or loading",
+ fr:"Catering livré ou chargé en retard",
+ i:["a) Matériel manquant à livrer par le prestataire catering",
+    "b) Panne du matériel catering (camion élévateur)",
+    "c) Livraison tardive ou erronée",
+    "d) Manque de personnel ou personnel en retard",
+    "e) Catering retour non chargé à l'escale précédente"],
+ k:"catering livraison chargement camion trolley prestataire retard"},
+{c:"38",g:"rmp",t:"ULD, lack of, or serviceability",fr:"ULD manquants ou inutilisables — non applicable chez Vueling",off:1,
+ k:"uld conteneur palette non applicable"},
+{c:"39",g:"rmp",t:"TECHNICAL EQUIPMENT, lack of/breakdown",
+ fr:"Matériel de piste manquant, en retard ou en panne",
+ i:["a) Groupe de démarrage pneumatique (ASU)","b) Repoussage (pushback)","c) Dégivrage"],
+ n:[{k:"attn",t:"En cas de mécanicien manquant pour le repoussage (BCN), utiliser le code 42."}],
+ r:["42"],
+ k:"asu air starter demarrage pushback repoussage tracteur degivrage materiel panne"},
+
+/* ---------- 4. TECHNIQUE ---------- */
+{c:"41",g:"tec",t:"AIRCRAFT DEFECTS",
+ fr:"Pannes avion",
+ i:["a) Avant off-block","b) Après off-block","c) Vol après visite prévol (PFI), attente technicien"],
+ n:[{k:"note",t:"Chapitre 4 : ces codes ne s'utilisent que si l'embarquement ou le départ est retenu par la maintenance."}],
+ k:"panne avion defaut technique off block pfi technicien maintenance"},
+{c:"42",g:"tec",t:"SCHEDULED MAINTENANCE, late release",
+ fr:"Maintenance programmée, mise à disposition tardive",
+ n:[{k:"attn",t:"À utiliser aussi pour un mécanicien en retard pour le repoussage ; ajouter l'info en SI."}],
+ r:["39"],
+ k:"maintenance programmee release mecanicien pushback repoussage retard"},
+{c:"43",g:"tec",t:"NON-SCHEDULED MAINTENANCE",
+ fr:"Maintenance non programmée",
+ i:["Contrôles spéciaux et travaux supplémentaires hors programme d'entretien."],
+ k:"maintenance non programmee controle special travaux"},
+{c:"44",g:"tec",t:"SPARES AND MAINTENANCE EQUIPMENT, lack of/or breakdown",
+ fr:"Pièces de rechange et outillage manquants ou en panne",
+ i:["a) Manque de pièces","b) Livraison tardive d'une pièce depuis le magasin","c) Manque ou panne d'outillage de maintenance"],
+ k:"piece rechange spare magasin outillage panne"},
+{c:"45",g:"tec",t:"AOG SPARES, to be carried to another station",
+ fr:"Pièces AOG à acheminer vers une autre escale",
+ k:"aog piece acheminement escale spare"},
+{c:"46",g:"tec",t:"AIRCRAFT CHANGE, for technical reason",
+ fr:"Changement d'avion pour raison technique",
+ n:[{k:"note",t:"Le premier changement d'avion pour raison technique ou AOG se code 46 ; tous les changements suivants se codent 96."}],
+ r:["96"],
+ k:"changement avion technique aog swap"},
+{c:"47",g:"tec",t:"NOT IN USE BY VLG",fr:"Non utilisé par Vueling",off:1,k:"non utilise"},
+{c:"48",g:"tec",t:"AIRBUS SYSTEM RESETS",fr:"Réinitialisation de systèmes Airbus",
+ k:"reset airbus systeme reinitialisation"},
+{c:"49",g:"tec",t:"TECHNICAL FAULT WHICH HAS IMPACT ON GROUND TIME (max. 5 minutes)",
+ fr:"Défaut technique impactant l'escale (5 minutes maximum)",
+ i:["a) Procédures opérationnelles MEL dues à un fort volume d'items reportés",
+    "b) Restriction technique opérationnelle, ex. avion nécessitant un démarrage pneumatique (ASU) pour cause d'APU inop."],
+ n:[{k:"attn",t:"Si l'ASU arrive en retard ou tombe en panne, utiliser le code 39."}],
+ r:["39"],
+ k:"mel apu inop asu restriction technique 5 minutes report"},
+
+/* ---------- 5. DOMMAGES ---------- */
+{c:"51",g:"dmg",t:"DAMAGE DURING FLIGHT OPERATIONS",
+ fr:"Dommage survenu en vol",
+ i:["a) Impact d'oiseau, foudre, turbulence, atterrissage dur ou en surcharge, collision au roulage, survitesse (et contrôles liés à ces événements)",
+    "b) Autre dommage pendant le vol (ex. déversement au poste de pilotage, débordement des déchets office)"],
+ k:"oiseau birdstrike foudre turbulence atterrissage dur survitesse collision roulage dommage vol"},
+{c:"52",g:"dmg",t:"DAMAGE DURING GROUND OPERATIONS",
+ fr:"Dommage survenu au sol",
+ i:["a) Collisions (hors roulage), dommage au chargement/déchargement, contamination, remorquage, conditions météo extrêmes",
+    "b) Collisions (hors roulage)",
+    "c) Dommage au chargement/déchargement",
+    "d) Débordement du circuit eau/eaux usées"],
+ n:[{k:"attn",t:"Une explication courte en langage clair est obligatoire en information complémentaire (texte SI du MVT), afin de décider quelle fonction doit prendre l'action préventive."}],
+ k:"choc collision dommage sol remorquage contamination chargement eaux usees debordement asr"},
+{c:"53",g:"dmg",t:"Aircraft change due to damage during flight operations",
+ fr:"Changement d'avion après dommage en vol",
+ i:["Turbulence, atterrissage dur ou en surcharge, survitesse…"],
+ k:"changement avion dommage vol turbulence atterrissage dur"},
+{c:"54",g:"dmg",t:"Aircraft change due to damage during ground operations",
+ fr:"Changement d'avion après dommage au sol",
+ i:["Dommage au chargement/déchargement, contamination, remorquage…"],
+ k:"changement avion dommage sol choc remorquage"},
+
+/* ---------- 6. SYSTÈMES ---------- */
+{c:"55",g:"sys",t:"AUTOMATED EQUIPMENT FAILURE, departure control",
+ fr:"Panne du système de contrôle départ (DCS)",
+ i:["a) DCS — panne enregistrement chez l'assistant",
+    "b) DCS — traitement avion (panne du système masse et centrage / devis)",
+    "c) Temps de réponse long, terminal bloqué (ex. enregistrement lent)"],
+ k:"dcs panne systeme enregistrement loadsheet masse centrage terminal lent bloque"},
+{c:"56",g:"sys",t:"CARGO SYSTEM FAILURE",fr:"Panne du système fret",k:"panne systeme fret cargo"},
+{c:"57",g:"sys",t:"FLIGHT PLAN SYSTEM FAILURE",fr:"Panne du système plan de vol",k:"panne systeme plan de vol fpl"},
+{c:"58",g:"sys",t:"AUTOMATED EQUIPMENT FAILURE, other systems",
+ fr:"Panne d'autres systèmes automatisés",i:["Ex. ACARS, radios."],
+ k:"acars radio panne systeme communication"},
+{c:"59",g:"sys",t:"CÁLCULOS DE ÚLTIMA HORA EN H/C",
+ fr:"Calculs de dernière minute en masse et centrage",
+ k:"lmc derniere minute calcul masse centrage handling"},
+
+/* ---------- 7. OPS & ÉQUIPAGES ---------- */
+{c:"61",g:"ops",t:"FLIGHT PLAN, late completion or change of flight documentation",
+ fr:"Plan de vol tardif ou modification de la documentation de vol",
+ i:["a) Erreur de plan de vol (dispatch)","b) Briefing remis tardivement (assistant)",
+    "c) Erreur GENDEC / Crew Dispatch","d) Erreur dans la documentation","e) Autres"],
+ k:"plan de vol dispatch briefing gendec documentation erreur ofp"},
+{c:"62",g:"ops",t:"OPERATIONAL REQUIREMENTS, extra fuel, load alteration",
+ fr:"Besoins opérationnels : carburant supplémentaire, modification de chargement",
+ i:["a) Défuel / ballast à la demande du commandant de bord",
+    "b) Carburant économique","c) Carburant supplémentaire à la demande du commandant de bord",
+    "d) Changement de dernière minute de l'équipage technique (ex. CAT III)",
+    "e) Ops engineering — documentation"],
+ r:["36"],
+ k:"extra fuel carburant supplementaire defuel ballast cdb commandant cat3 economique"},
+{c:"63",g:"ops",t:"LATE FLIGHT DECK CREW other than connection, stand-by or crew transport",
+ fr:"Équipage technique en retard (hors correspondance, réserve ou transport)",
+ k:"pnt equipage technique pilote retard"},
+{c:"64",g:"ops",t:"FLIGHT DECK CREW SHORTAGE",
+ fr:"Manque d'équipage technique",
+ i:["a) Maladie / non disponible / no-show","b) Vol dû à des raisons maintenance",
+    "c) Limitations de temps de vol","d) Erreurs de planification",
+    "e) FTL pour d'autres causes","f) Changements liés à la formation",
+    "g) Absence de réserve au planning","h) Malade (plus de 01h30 avant la prise de service)"],
+ k:"pnt pilote manque maladie no show ftl reserve planning formation"},
+{c:"65",g:"ops",t:"FLIGHT DECK CREW SPECIAL REQUEST, not within requirements",
+ fr:"Demande particulière de l'équipage technique, hors exigences",
+ i:["a) Commande catering (demande du commandant)","b) Signature du commandant manquante sur le carnet de bord",
+    "c) Routines poste de pilotage prolongées (briefing, formation…)","d) Visite prévol (PFI)",
+    "e) Acceptation de passagers après H-10"],
+ k:"cdb commandant demande catering carnet bord signature briefing pfi h-10 plateaux equipage"},
+{c:"66",g:"ops",t:"LATE CABIN CREW ARRIVAL, other than connection, stand-by or crew transport",
+ fr:"Équipage commercial arrivé en retard (hors correspondance, réserve ou transport)",
+ k:"pnc equipage commercial hotesse steward retard"},
+{c:"67",g:"ops",t:"CABIN CREW SHORTAGE",
+ fr:"Manque d'équipage commercial",
+ i:["a) Malade en service / no-show / non disponible (moins de 01h30 avant la prise de service)",
+    "b) Vol dû à des raisons maintenance","c) Limitations de temps de vol",
+    "d) Erreurs de planification","e) FTL pour d'autres causes","f) Formation"],
+ k:"pnc manque maladie no show ftl planning formation"},
+{c:"68",g:"ops",t:"CABIN CREW ERROR OR SPECIAL REQUEST, special request not within operational requirements",
+ fr:"Erreur ou demande particulière de l'équipage commercial",
+ i:["a) Erreur de comptage des passagers à bord","b) Commande catering (demande PNC)","c) Toboggan d'évacuation déployé"],
+ k:"pnc erreur comptage passagers catering toboggan slide evacuation"},
+{c:"69",g:"ops",t:"Not in use by Vueling",fr:"Non utilisé par Vueling",off:1,k:"non utilise"},
+
+/* ---------- 8. MÉTÉO ---------- */
+{c:"71",g:"met",t:"DEPARTURE STATION, weather below aircraft operating minima",
+ fr:"Météo au départ sous les minima de l'avion",
+ i:["b) Cabine de l'avion pas aux conditions de température adéquates."],
+ n:[{k:"attn",t:"Concerne toutes les restrictions liées à l'avion."}],
+ k:"meteo depart minima brouillard lvp vent temperature cabine"},
+{c:"72",g:"met",t:"DESTINATION STATION, weather below aircraft operating minima",
+ fr:"Météo à destination sous les minima de l'avion",
+ k:"meteo destination minima arrivee"},
+{c:"73",g:"met",t:"EN ROUTE OR ALTERNATIVE, weather below aircraft operating minima",
+ fr:"Météo en route ou au déroutement sous les minima",
+ k:"meteo en route degagement alternate minima"},
+{c:"75",g:"met",t:"DEICING AND DE-SNOWING OF AIRCRAFT, removal of ice and/or snow, frost prevention excluding unserviceable equipment",
+ fr:"Dégivrage et déneigement de l'avion, prévention du givre",
+ i:["a) Dégivrage avant ou après repoussage (au poste ou en zone déportée)",
+    "b) Dégel de glace accumulée à l'escale précédente",
+    "e) Manque de matériel de dégivrage"],
+ k:"degivrage deneigement givre neige glace anti ice type 1 type 4 deicing pad"},
+{c:"76",g:"met",t:"REMOVAL OF SNOW, ICE, WATER AND SAND FROM AIRPORT",
+ fr:"Déneigement de l'aéroport (neige, glace, eau, sable)",
+ k:"deneigement piste aeroport neige glace eau sable balayage"},
+{c:"77",g:"met",t:"GROUND HANDLING IMPAIRED BY ADVERSE WEATHER CONDITIONS",
+ fr:"Assistance au sol dégradée par la météo",
+ i:["Processus d'assistance affecté (ex. passerelle non connectable à cause du vent)."],
+ k:"vent orage meteo assistance passerelle finger arret piste alerte"},
+
+/* ---------- 9. ATFM ---------- */
+{c:"81",g:"atf",t:"ATFM DUE TO ATC EN-ROUTE DEMAND/CAPACITY",
+ fr:"Régulation ATFM : capacité en route",i:["Problème standard de demande/capacité."],
+ n:[{k:"note",t:"Chapitre 9 : codes à utiliser uniquement lorsque le message de régulation (flow) le précise."}],
+ k:"atfm regulation ctot slot en route capacite atc creneau"},
+{c:"82",g:"atf",t:"ATFM DUE TO ATC STAFF/EQUIPMENT EN-ROUTE",
+ fr:"Régulation ATFM : personnel ou équipement ATC en route",
+ i:["Capacité réduite par mouvement social, manque de personnel ou panne d'équipement ; demande exceptionnelle due à une réduction de capacité dans un secteur voisin."],
+ k:"atfm greve atc personnel panne equipement secteur voisin ctot"},
+{c:"83",g:"atf",t:"ATFM DUE TO RESTRICTION AT DESTINATION AIRPORT",
+ fr:"Régulation ATFM : restriction à l'aéroport de destination",
+ i:["Fermeture d'aéroport ou de piste pour obstruction, mouvement social, manque de personnel, troubles politiques, réduction de bruit, couvre-feu, vols spéciaux."],
+ n:[{k:"note",t:"Si la restriction concerne l'aéroport de départ, utiliser le code 89."}],
+ r:["89"],
+ k:"atfm destination fermeture piste couvre feu bruit greve ctot"},
+{c:"84",g:"atf",t:"ATFM DUE TO WEATHER AT DESTINATION",
+ fr:"Régulation ATFM pour météo à destination",
+ k:"atfm meteo destination ctot regulation orage"},
+
+/* ---------- 10. AÉROPORT & AUTORITÉS ---------- */
+{c:"85",g:"apt",t:"MANDATORY SECURITY",
+ fr:"Sûreté obligatoire",
+ i:["a) Fouille de sûreté approfondie (ex. scellé rompu)",
+    "b) Passager perturbateur (hors maladie, à coder en 16)"],
+ n:[{k:"attn",t:"Le débarquement ou la fouille de bagage dû à un pax en retard à la porte se code uniquement 05."}],
+ r:["16","5"],
+ k:"surete securite fouille scelle passager perturbateur unruly police"},
+{c:"86",g:"apt",t:"IMMIGRATION, CUSTOMS, HEALTH",
+ fr:"Immigration, douane, sanitaire",
+ i:["a) Contrôle de police","b) Exigences particulières (ex. contexte pandémique)"],
+ k:"police paf douane immigration sanitaire controle frontiere"},
+{c:"87",g:"apt",t:"AIRPORT FACILITIES, parking stands, ramp congestion, lighting, Buildings, gate limitations, etc.",
+ fr:"Installations aéroportuaires : postes, congestion piste, portes",
+ i:["a) Manque de postes de stationnement, attribution ou changement tardif de poste",
+    "b) Files d'attente au contrôle de sûreté","c) Éclairage ou bâtiments","d) Limitations de porte",
+    "e) Camions de servitude retardés par le trafic piste",
+    "f) Système bagages incapable de traiter un volume excessif",
+    "g) Tri bagages hors service",
+    "h) Panne du système d'information aéroport s'il appartient à l'aéroport",
+    "i) Passerelle hors service ou opérateur passerelle en retard",
+    "j) Imprimante ou lecteur de cartes d'embarquement hors service",
+    "k) Panne du système de la porte"],
+ n:[{k:"attn",t:"Tri bagages : si la cause est le personnel, utiliser le code 18."}],
+ r:["18"],
+ k:"poste stationnement parking congestion piste passerelle finger porte gate tri bagages bhs eclairage adp"},
+{c:"88",g:"apt",t:"RESTRICTIONS AT AIRPORT OF DESTINATION",
+ fr:"Restrictions à l'aéroport de destination",
+ i:["Aéroport ou piste fermé pour obstruction, mouvement social, manque de personnel, troubles politiques, réduction de bruit, couvre-feu, vols spéciaux."],
+ k:"destination fermeture piste couvre feu bruit greve restriction"},
+{c:"89",g:"apt",t:"RESTRICTIONS AT AIRPORT OF DEPARTURE WITH OR WITHOUT ATFM RESTRICTIONS",
+ fr:"Restrictions à l'aéroport de départ, avec ou sans régulation ATFM",
+ i:["a) Gestion CDM","b) Clairance de mise en route et repoussage due à la congestion piste",
+    "c) Aéroport ou piste fermé","d) Manque de personnel","e) Troubles politiques",
+    "f) Réduction de bruit / couvre-feu","g) Vols spéciaux","h) Changement de configuration de piste"],
+ n:[{k:"note",t:"Inclut les services de la circulation aérienne, la mise en route et le repoussage, la fermeture d'aéroport ou de piste pour obstruction ou météo."},
+    {k:"attn",t:"Restrictions dues à la météo uniquement en cas de régulation ATFM ; sinon utiliser le code 71."}],
+ r:["71"],
+ k:"cdm tsat mise en route startup pushback clairance congestion qfu configuration piste couvre feu"},
+
+/* ---------- 11. RÉACTIONNAIRE ---------- */
+{c:"91",g:"rea",t:"Waiting for transit passengers and bags",
+ fr:"Attente de passagers et bagages en correspondance",
+ k:"correspondance transit attente pax bagages connexion"},
+{c:"92",g:"rea",t:"CIVIL AVIATION INSPECTION",fr:"Inspection de l'aviation civile",i:["Ex. SANA, SAFA…"],
+ k:"safa sana inspection dgac aviation civile controle"},
+{c:"93",g:"rea",t:"AIRCRAFT ROTATION, late arrival of aircraft from another flight or previous sector",
+ fr:"Rotation avion : arrivée tardive de l'avion du vol précédent",
+ i:["Code à utiliser lorsque l'escale réelle, selon le standard des éléments de trafic, n'est pas dépassée pour l'escale et le type d'avion concernés."],
+ n:[{k:"note",t:"Si le vol, malgré une arrivée tardive, dépasse le temps d'escale minimum établi, la vraie cause du retard doit apparaître dans le message départ, ex. 93 + 34."},
+    {k:"note",t:"Si la charge au départ dépasse 160 pax : 5 minutes d'escale supplémentaires applicables sur les escales programmées à 30 min (93 + 5 min)."}],
+ r:["2"],
+ k:"repercussion rotation retard avion precedent ttm escale minimum 160 pax reactionnaire"},
+{c:"94",g:"rea",t:"CABIN CREW ROTATION, awaiting cabin crew from another flight",
+ fr:"Rotation équipage commercial : attente du PNC d'un autre vol",
+ n:[{k:"note",t:"Mention du manuel : « no lo utilizan » — non utilisé."}],
+ k:"pnc rotation attente equipage autre vol"},
+{c:"95",g:"rea",t:"FLIGHT DECK CREW ROTATION, awaiting flight crew from another flight",
+ fr:"Rotation équipage technique : attente du PNT d'un autre vol",
+ i:["a) Croisement Schengen – Schengen","b) Croisement Schengen – hors Schengen, ou hors Schengen – Schengen"],
+ k:"pnt rotation attente equipage schengen croisement"},
+{c:"96",g:"rea",t:"OPERATIONS CONTROL",
+ fr:"Contrôle des opérations (OCC)",
+ i:["a) Protection opérationnelle","b) Erreur OCC","c) AOG","d) Dommage","e) Protection couvre-feu"],
+ n:[{k:"note",t:"Tous les changements d'avion suivant le premier changement technique se codent 96."}],
+ r:["46"],
+ k:"occ protection erreur aog dommage couvre feu curfew changement avion"},
+
+/* ---------- 12. DIVERS ---------- */
+{c:"97",g:"div",t:"INDUSTRIAL ACTION WITHIN OWN AIRLINE",
+ fr:"Mouvement social au sein de la compagnie",
+ i:["Réunions ou actions de toutes les parties affectant l'assistance au sol (ex. grèves)."],
+ k:"greve mouvement social compagnie preavis debrayage"},
+{c:"98",g:"div",t:"INDUSTRIAL ACTION OUTSIDE OWN AIRLINE",
+ fr:"Mouvement social hors compagnie",
+ i:["a) Grève ATC","b) Grève de l'assistance","c) Grève de la sûreté (rayons X)"],
+ k:"greve atc handling surete rayon x mouvement social externe"},
+{c:"99",g:"div",t:"OTHERS",
+ fr:"Autres causes",
+ i:["a) Autres circonstances non couvertes par les codes ci-dessus",
+    "b) Erreurs de l'escale précédente",
+    "c) Absence de messages de l'escale précédente",
+    "d) Demande de nettoyage supplémentaire une fois la prestation déjà faite",
+    "e) Avitaillement tardif dû à un changement d'avion alors que la prestation était déjà faite"],
+ k:"autre divers escale precedente message manquant nettoyage supplementaire changement avion"}
+];
+
+// ── MOTEUR DE RECHERCHE VY ────────────────────────────────────────────
+VY_DATA.forEach(d=>{
+  d.hay = vyNorm([d.c, d.t, d.fr, (d.i||[]).join(" "), (d.n||[]).map(n=>(n.t||"")+" "+(n.b||"")).join(" "), (d.r||[]).join(" "), d.k||""].join(" "));
+});
+function vyNorm(s){ return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s\-\/]/g," ").replace(/\s+/g," ").trim(); }
+
+let vyQuery="", vyFilter="all", vyOpen=null;
+
+function vyBuildChips(){
+  const c=document.getElementById('vy-chips'); if(!c) return;
+  const all=[{k:"all",n:"Tous",r:""}].concat(VY_GROUPS);
+  c.innerHTML=all.map(g=>`<button class="vy-chip g-${g.k} ${g.k===vyFilter?'on':''}" data-k="${g.k}">${g.n}${g.r?` <span class="vy-chip-r">${g.r}</span>`:''}</button>`).join('');
+  c.querySelectorAll('.vy-chip').forEach(b=>b.onclick=()=>{ vyFilter=b.dataset.k; vyOpen=null; vyBuildChips(); vyRender(); });
+}
+
+function vySearch(){
+  const tokens=vyNorm(vyQuery).split(" ").filter(Boolean);
+  let rows=VY_DATA.filter(d=>vyFilter==="all"||d.g===vyFilter);
+  if(!tokens.length) return rows.map(d=>({d,score:0}));
+  return rows.map(d=>{
+    let score=0, ok=true;
+    for(const t of tokens){
+      if(!d.hay.includes(t)){ ok=false; break; }
+      if(d.c===t) score+=1000;
+      else if(d.c.startsWith(t)) score+=400;
+      if(vyNorm(d.fr).includes(t)) score+=120;
+      if(vyNorm(d.t).includes(t)) score+=100;
+      if(vyNorm((d.i||[]).join(" ")).includes(t)) score+=50;
+      if(vyNorm(d.k||"").includes(t)) score+=40;
+      score+=5;
+    }
+    return ok?{d,score}:null;
+  }).filter(Boolean).sort((a,b)=>b.score-a.score||(+a.d.c)-(+b.d.c));
+}
+
+const vyEsc = s => (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+function vyHl(text){
+  const tokens=vyNorm(vyQuery).split(" ").filter(t=>t.length>1);
+  let out=vyEsc(text);
+  if(!tokens.length) return out;
+  tokens.forEach(t=>{
+    const re=new RegExp("("+t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+    out=out.replace(re,"<mark>$1</mark>");
+  });
+  return out;
+}
+
+function vyMatchedLine(d){
+  const tokens=vyNorm(vyQuery).split(" ").filter(t=>t.length>1);
+  if(!tokens.length) return "";
+  if(tokens.some(t=>vyNorm(d.fr).includes(t)||vyNorm(d.t).includes(t))) return "";
+  const pool=[...(d.i||[]),...(d.n||[]).map(n=>n.t)];
+  const found=pool.find(line=>tokens.some(t=>vyNorm(line).includes(t)));
+  return found?`<div class="vy-hit">${vyHl(found)}</div>`:"";
+}
+
+function vyDetail(d){
+  let h="";
+  if(d.i&&d.i.length) h+=`<h4>Détail du manuel</h4><ul>${d.i.map(x=>`<li>${vyHl(x)}</li>`).join("")}</ul>`;
+  (d.n||[]).forEach(n=>{
+    const cls=n.type==="alert"?"vy-note vy-alert":"vy-note";
+    h+=`<div class="${cls}">${n.b?`<b>${vyEsc(n.b)}</b> `:""}${vyHl(n.t)}</div>`;
+  });
+  if(d.r&&d.r.length) h+=`<div class="vy-refs">↳ ${d.r.map(x=>vyHl(x)).join(" · ")}</div>`;
+  return h;
+}
+
+function vyRender(){
+  const list=document.getElementById('vy-list'); const cnt=document.getElementById('vy-count');
+  if(!list) return;
+  const res=vySearch();
+  cnt.textContent=res.length?`${res.length} code${res.length>1?'s':''}`:'';
+  if(!res.length){ list.innerHTML='<div class="vy-empty">Aucun résultat.<br><span>Essayez un numéro de code ou un mot-clé (dégivrage, GPU, bagage…)</span></div>'; return; }
+  list.innerHTML=res.map(({d})=>{
+    const open=vyOpen===d.c;
+    return `<article class="vy-card g-${d.g} ${open?'open':''}">
+      <div class="vy-head" onclick="vyToggle('${d.c}')">
+        <span class="vy-code">${vyHl(d.c)}</span>
+        <div class="vy-txt">
+          <div class="vy-fr">${vyHl(d.fr)}</div>
+          <div class="vy-en">${vyHl(d.t)}</div>
+          ${vyMatchedLine(d)}
+        </div>
+        <span class="vy-arrow">${open?'▾':'▸'}</span>
+      </div>
+      ${open?`<div class="vy-body">${vyDetail(d)}
+        <button class="vy-copy" onclick="event.stopPropagation();vyCopy('${d.c}')">📋 Copier « DL${d.c} »</button>
+      </div>`:''}
+    </article>`;
+  }).join('');
+}
+
+function vyToggle(c){ vyOpen=(vyOpen===c)?null:c; vyRender(); }
+function vyCopy(c){
+  const d=VY_DATA.find(x=>x.c===c); if(!d) return;
+  const txt=`DL${d.c} — ${d.t}`;
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>showToast('📋 '+txt)); }
+  else{ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');showToast('📋 '+txt);}catch(e){} document.body.removeChild(ta); }
+}
+function vyOnInput(v){ vyQuery=v; vyOpen=null; vyRender(); document.getElementById('vy-clear').style.display=v?'block':'none'; }
+function vyClear(){ vyQuery=""; vyOpen=null; document.getElementById('vy-q').value=""; document.getElementById('vy-clear').style.display='none'; vyRender(); }
+function refreshVyUI(){ if(!document.getElementById('vy-chips').innerHTML) vyBuildChips(); vyRender(); }
+
 const KEY_CODES = 'dl_codes';
 let codesFilter = 'all';
 let editingCodeId = null;
 
 // Complete EasyJet GHM + Vueling GOM Annex E delay codes – Bilingual FR/EN
-const DEFAULT_CODES = [
-// ═══ EASYJET GHM ═══
-{id:1,code:'00',desc:'Self Manoeuvring Departure / Départ en manœuvre autonome',keywords:['self manoeuvring','auto-manoeuvre','headset','ceo','neo','démarrage autonome','pushback autonome'],companies:['ezy'],notes:'Max 3 min CEO / 6 min NEO. Au-delà → autre code.'},
-{id:2,code:'01',desc:'Baggage System Failure / Panne système bagages',keywords:['baggage system','système bagage','panne tapis','convoyeur','conveyor failure','bag system'],companies:['ezy'],notes:'Si manque de staff → 18.'},
-{id:3,code:'02',desc:'Tech defect in Tech Log (max 10 min) + System Resets',keywords:['tech log','mel','system reset','réinitialisation','qrh','fcom','défaut technique','reset système','existing defect'],companies:['ezy'],notes:'Si ingénieur requis → 43. Si nouveau défaut → 41.'},
-{id:4,code:'03',desc:'Late Release of Passengers for Boarding / Libération tardive pax',keywords:['late release','green light boarding','glb','std-25','passager non disponible','cabin security check','libération tardive'],companies:['ezy'],notes:'Si coaching → 19. Si gate layout → 87.'},
-{id:5,code:'04',desc:'Special Assistance / PRM',keywords:['prm','pmr','special assistance','mobilité réduite','wheelchair','fauteuil','ambulift','ema','electric mobility','handicap','disabled'],companies:['ezy'],notes:'Embarquement/débarquement lent ou volume élevé de PRMs.'},
-{id:6,code:'05',desc:'Offload pax/baggage at gate / Déchargement pax à la porte',keywords:['offload','déchargement passager','gate closure','fermeture porte','pax absent','no show','disruptive airport','missing pax'],companies:['ezy'],notes:'Si déjà à bord → 08. Si poids → 62. Cabin bags: gate→15, cabin→66, volume→10.'},
-{id:7,code:'06',desc:'Flight Crew Training / Formation équipage technique',keywords:['flight crew training','formation pilote','training pnt','formation équipage'],companies:['ezy'],notes:''},
-{id:8,code:'07',desc:'Cabin Crew Training / Formation PNC',keywords:['cabin crew training','formation pnc','training pnc','formation hôtesse'],companies:['ezy'],notes:''},
-{id:9,code:'08',desc:'Disruptive Passenger(s) / Passager(s) perturbateur(s)',keywords:['disruptive','passager perturbateur','ill passenger','malade','medical','police','unruly','sick passenger','offload cabin','comportement'],companies:['ezy'],notes:'Malade, refus de voyager, offloaded par crew, police à l\'arrivée.'},
-{id:10,code:'09',desc:'Scheduled ground time < declared minimum / Rotation courte',keywords:['ground time','minimum ground time','rotation courte','turnaround court','schedule less','temps sol'],companies:['ezy'],notes:'Si décision OCC → 96.'},
-{id:11,code:'10',desc:'Offload bags cabin to hold / Bagages cabine vers soute',keywords:['cabin to hold','offload bags cabin','hand baggage policy','bagage cabine soute','excess cabin bags','sac cabine'],companies:['ezy'],notes:'Gate enforcement → 15. Cabin management → 66.'},
-{id:12,code:'11',desc:'Late Check-in – acceptance after deadline / Enregistrement tardif',keywords:['check-in','enregistrement','late check-in','retard enregistrement','deadline','acceptance tardive','pax late','comptoir'],companies:['ezy','vly'],notes:'EZY: check-in maintenu ouvert. VLY: except if authorized by Vueling.'},
-{id:13,code:'12',desc:'Late Check-in – congestion / Congestion zone check-in',keywords:['congestion','check-in staff','file attente','queue','manque personnel','slow processing','handling agent','new staff'],companies:['ezy','vly'],notes:'EZY: si système → 55, bagage → 18/01. VLY: a) Lack staff b) Queue counter.'},
-{id:14,code:'13',desc:'Check-in Error / Erreur d\'enregistrement pax/bagage',keywords:['check-in error','erreur enregistrement','duplicate boarding card','wrong figures','incorrect processing','baggage tags','plâtre'],companies:['ezy','vly'],notes:''},
-{id:15,code:'14',desc:'Oversales – booking errors / Surbooking',keywords:['oversales','overbooking','surbooking','booking error','duplicate seat','erreur réservation','denied boarding','offloading'],companies:['ezy','vly'],notes:'EZY: equipment change → 96. VLY: sub charter less capacity.'},
-{id:16,code:'15',desc:'Boarding – discrepancies, paging / Embarquement, discordances',keywords:['boarding','embarquement','discrepancy','paging','appel','headcount','comptage','hand baggage gate','slow boarding','wrong aircraft','missing pax','discordance','passport','visa','gate staff'],companies:['ezy','vly'],notes:'EZY: late coach → 19, late boarding → 03, cabin → 66, volume → 10. VLY: after departure call.'},
-{id:17,code:'16',desc:'Commercial / Passenger Convenience – VIP, INADs, deportees',keywords:['commercial','lost property','objet perdu','vip','press','filming','inad','inadmissible','deportee','expulsé','convenience','illness','maladie','death','infant','elderly','ancillaries'],companies:['ezy','vly'],notes:'VLY: disruptive → 85.'},
-{id:18,code:'17',desc:'Crew Food (EZY) / Catering Order (VLY)',keywords:['crew food','repas équipage','crew meal','catering order','commande catering','up catering','incorrect order'],companies:['ezy','vly'],notes:'EZY: late crew food. VLY: late/incorrect order to supplier (crew meals → 65).'},
-{id:19,code:'18',desc:'Baggage Processing / Traitement bagages',keywords:['baggage processing','traitement bagage','sorting','tri','bingo sheets','trailer','missing bag','extra bag','bagage manquant','trolley','sorting area'],companies:['ezy','vly'],notes:'EZY: system failure due staff. Not staff → 01. VLY: sorting inop → 87.'},
-{id:20,code:'19',desc:'Coaching pax/crew (EZY) / Late PMR Assistance (VLY)',keywords:['coaching','bus','navette','coach','transport pax','crew coach','late coach','pmr','prm','mobilité réduite','wheelchair','ambulift','psm','wch','assistance'],companies:['ezy','vly'],notes:'EZY: bus pax/crew. VLY: late PMR assistance, include WCH type.'},
-{id:100,code:'21',desc:'Cargo Documentation',keywords:['cargo doc','documentation fret','awb','incorrect cargo'],companies:['vly'],notes:''},
-{id:101,code:'22',desc:'Late Positioning – cargo',keywords:['cargo late','fret retard','positionnement','delivery cargo'],companies:['vly'],notes:''},
-{id:102,code:'23',desc:'Late Acceptance – cargo after deadline',keywords:['cargo acceptance','acceptation fret','late cargo'],companies:['vly'],notes:''},
-{id:103,code:'24',desc:'Inadequate Packing – repackaging/re-labelling',keywords:['packing','emballage','repackaging','re-labelling','étiquetage'],companies:['vly'],notes:''},
-{id:104,code:'25',desc:'Oversales cargo – excess sealable load',keywords:['oversales cargo','excès charge','surcharge fret'],companies:['vly'],notes:''},
-{id:105,code:'26',desc:'Load/Unload – lack staff/equipment cargo',keywords:['load unload cargo','manque personnel cargo'],companies:['vly'],notes:''},
-{id:106,code:'27',desc:'Documentation, Packing (Mail only)',keywords:['mail doc','courrier','poste'],companies:['vly'],notes:''},
-{id:107,code:'28',desc:'Late Positioning (Mail only)',keywords:['mail late','courrier retard'],companies:['vly'],notes:''},
-{id:108,code:'29',desc:'Late Acceptance (Mail only)',keywords:['mail acceptance','courrier tardif'],companies:['vly'],notes:''},
-{id:21,code:'31',desc:'Aircraft Documentation Late/Inaccurate / Documentation avion',keywords:['documentation','loadsheet','centrage','weight balance','w&b','gendec','manifest','dispatcher','load reconciliation','loading form','papiers avion','coordinateur','loading instruction'],companies:['ezy','vly'],notes:'EZY: late check-in → 11/12, flight plan → 61, system → 55, non-tech → 96, tech → 46.'},
-{id:22,code:'32',desc:'Loading/Unloading – bulky, special load / Chargement/Déchargement',keywords:['loading','unloading','chargement','déchargement','loaders','slow loading','ramp crew','outbound bags','loading staff','special load','bulky','encombrant','load master'],companies:['ezy','vly'],notes:'EZY: baggage system → 18/01. Lack of staff → 32.'},
-{id:23,code:'33',desc:'Loading Equipment – lack/breakdown / Équipement chargement',keywords:['loading equipment','belt loader','dolley','flatbed','panne équipement','loader','gse','matériel sol','tapis bagage'],companies:['ezy','vly'],notes:'EZY: lack of staff → 32.'},
-{id:24,code:'34',desc:'Servicing Equipment – lack/breakdown/staff / Passerelle, Pushback, GPU',keywords:['servicing','steps','escalier','airbridge','passerelle','pushback','tug','tracteur','gpu','headset','toilet','water','pigs','cones','pathing','remorquage','tow','de-icing rig','acu','bus passager','heating','cooling','climatisation','crew pick up'],companies:['ezy','vly'],notes:'EZY: headset >60s → 34. Tow ready STD-60 → 89. VLY: a) Water b) Toilet c) Staff d) ACU e) Buses f) GPU g) Steps h) Crew pick up.'},
-{id:25,code:'35',desc:'Aircraft Cleaning / Nettoyage avion',keywords:['cleaning','nettoyage','gash','cabin clean','nettoyage cabine','propreté','windscreen','seat cover','soiled','third party','nettoyage exceptionnel','extraordinary'],companies:['ezy','vly'],notes:'EZY: extended by crew → 66. VLY: a-b) Water/toilet by cleaning staff c) Lack staff d) Extraordinary.'},
-{id:26,code:'36',desc:'Fuelling/Defuelling – fuel supplier / Avitaillement',keywords:['fuel','avitaillement','fuelling','defuelling','dépotage','fuel truck','kérosène','carburant','bowser','fueller late','incorrect fuel','wrong fuel figures'],companies:['ezy','vly'],notes:'EZY: fueller on time but uplift → 62. Dest/load change → 96. VLY: extra fuel after initial → 62.'},
-{id:27,code:'37',desc:'Catering – late delivery or loading / Catering passagers',keywords:['catering','plateau repas','galley','trolley','chariot','catering loading','passenger catering','livraison catering','commissariat','return catering'],companies:['ezy','vly'],notes:'EZY: weight → 62, wind → 77.'},
-{id:109,code:'38',desc:'(N/A Vueling) ULD',keywords:['uld','container','n/a vueling'],companies:['vly'],notes:''},
-{id:110,code:'39',desc:'Technical Equipment – lack/breakdown / ASU, Pushback, De-icing',keywords:['technical equipment','asu','air starter','pushback','de-icing','tracteur','tug','passerelle','remorquage','panne équipement sol'],companies:['vly'],notes:'Missing mechanic pushback BCN → 42.'},
-{id:28,code:'41',desc:'Aircraft Defects / Panne avion',keywords:['defect','panne','technical','technique','maintenance','mécanique','snag','inop','tech log entry','moc','engineer','avionique','aircraft defect','pfi','technician'],companies:['ezy','vly'],notes:'EZY: existing tech log → 43. VLY: only if boarding/departure held by maintenance.'},
-{id:29,code:'42',desc:'Scheduled Maintenance – late release / Maintenance planifiée',keywords:['scheduled maintenance','maintenance programmée','late release','libération tardive','visite','check','a-check','daily','mechanic','mécanicien','pushback mechanic'],companies:['ezy','vly'],notes:'VLY: also late mechanic for pushback (add SI).'},
-{id:30,code:'43',desc:'Non-scheduled Maintenance / Maintenance non planifiée',keywords:['unscheduled','non programmée','non-scheduled','special checks','wingtip brake','fuel tank dipstick','additional works','engineer existing defect','panne inattendue','réparation'],companies:['ezy','vly'],notes:'EZY: engineer for existing tech log defect.'},
-{id:31,code:'44',desc:'Spares & Maintenance Equipment / Pièces détachées',keywords:['spares','pièces','tools','outillage','spare part','mel','cdl','maintenance equipment','pièce détachée','breakdown equipment'],companies:['ezy','vly'],notes:''},
-{id:32,code:'45',desc:'AOG Spares / Pièces AOG',keywords:['aog','aircraft on ground','avion au sol','spare aog','pièce urgente','another station'],companies:['ezy','vly'],notes:''},
-{id:33,code:'46',desc:'Aircraft Change – technical / Changement avion technique',keywords:['aircraft change','changement avion','substitution','swap','technical reason','sub','backup'],companies:['ezy','vly'],notes:'EZY: non-tech/unknown → 96. VLY: first change → 46, following → 96.'},
-{id:111,code:'47',desc:'NOT IN USE BY VLG',keywords:['not in use'],companies:['vly'],notes:''},
-{id:112,code:'48',desc:'Airbus System Resets (VLG)',keywords:['airbus reset','system reset','réinitialisation','reset système'],companies:['vly'],notes:''},
-{id:113,code:'49',desc:'Technical Fault – impact ground time (max 5 min)',keywords:['technical fault','mel','deferred items','apu inop','air start','asu','max 5 min','restriction opérationnelle'],companies:['vly'],notes:'ASU late/broken → 39.'},
-{id:34,code:'51',desc:'Damage during Flight Operations / Dommage en vol',keywords:['damage flight','bird strike','collision oiseau','lightning','foudre','turbulence','heavy landing','atterrissage dur','overweight','over speed','wheel change','puncture','taxi collision','spillage'],companies:['ezy','vly'],notes:''},
-{id:35,code:'52',desc:'Damage during Ground Operations / Dommage au sol',keywords:['damage ground','collision sol','loading damage','contamination','towing damage','slide blown','ground collision','dommage chargement','water waste','overfill'],companies:['ezy','vly'],notes:'EZY: slide by crew → 68. VLY: SI mandatory.'},
-{id:114,code:'53',desc:'Aircraft Change – damage during flight ops (VLG)',keywords:['aircraft change damage flight','turbulence damage'],companies:['vly'],notes:''},
-{id:115,code:'54',desc:'Aircraft Change – damage during ground ops (VLG)',keywords:['aircraft change damage ground','loading damage change'],companies:['vly'],notes:''},
-{id:36,code:'55',desc:'Departure Control System Failure / Panne DCS',keywords:['departure control','dcs','system failure','panne système','check-in failure','kiosk','boarding system','informatique','check-in kiosk','eres','terminal locked','w&b system'],companies:['ezy','vly'],notes:'VLY: a) DCS Handling Check-in b) DCS W&B c) Terminal locked/slow.'},
-{id:37,code:'56',desc:'Connect Aircraft (EZY) / Cargo System Failure (VLG)',keywords:['connect aircraft','ofp download','efb','connect','téléchargement ofp','cargo system','système cargo','panne cargo'],companies:['ezy','vly'],notes:'EZY: unable download OFP. VLG: cargo system failure.'},
-{id:38,code:'57',desc:'Flight Planning System Failure / Panne système plan de vol',keywords:['flight plan system','lido','panne plan de vol','cfp system','ofp system','flight planning failure'],companies:['ezy','vly'],notes:'EZY: other reasons → 61.'},
-{id:39,code:'58',desc:'Other Automated System Failure / Autre système',keywords:['automated system','autre système','system failure other','panne automatique','eres','acars','radio','communication failure'],companies:['ezy','vly'],notes:'EZY: boarding/check-in → 55, FIDS → 87.'},
-{id:40,code:'59',desc:'Connect Aircraft Comms (EZY) / Cálculos última hora (VLG)',keywords:['comms signal','signal','3g','4g','wifi','efb','connect comms','réseau','calculos','última hora','head count','h/c'],companies:['ezy','vly'],notes:'EZY: unreliable signal for EFB. VLG: last minute calculations.'},
-{id:41,code:'61',desc:'Flight Documentation / Documentation vol',keywords:['flight documentation','plan de vol','documentation vol','crew portal','crewroom printer','imprimante','operational planning','late crew std-35','fp error','briefing','gendec','crew dispatch'],companies:['ezy','vly'],notes:'EZY: Lido failure → 57. VLY: a) FP error b) Late briefing c) GENDEC error.'},
-{id:42,code:'62',desc:'Operational Requirements – fuel, load / Exigences opérationnelles',keywords:['operational requirements','extra fuel','carburant supplémentaire','load alteration','performance limitations','fuel uplift','takeoff limitations','ambulift blocking','weight limitation','limitation masse','defueling','ballast','economy fuel','demande commandant','cat iii','ops engineering'],companies:['ezy','vly'],notes:'EZY: fueller on time but uplift late. VLY: de-fueling/ballast, economy fuel, extra fuel CDB, last minute crew change.'},
-{id:43,code:'63',desc:'Late Crew Boarding / Departure Procedures (flight deck or entire crew)',keywords:['late crew','crew boarding','departure procedures','équipage retard','crew change','crew room','briefing','door closure','crew late std-35','late entire crew','late flight deck','pilote retard','pnt retard'],companies:['ezy','vly'],notes:'EZY: security queue → 86, coaches → 19, single FD system → 57/61, CC only → 66, standby → 64, other flight → 95. VLY: other than connection/standby/transport.'},
-{id:44,code:'64',desc:'Flight Deck Crew Shortage / Manque pilotes',keywords:['flight deck shortage','pnt manque','pilote absent','sick pilot','sickness','no show pilot','ftl','standby pilot','visa','health docs','licence','crew shortage','pilote malade','scheduling error','rostering'],companies:['ezy','vly'],notes:'VLY: a) Sickness/No show b) MX c) FTL d) Scheduling e) Other f) Training g) Lack stby h) Sick >01H30.'},
-{id:45,code:'65',desc:'Flight Deck Crew Special Request / Demande spéciale pilotes',keywords:['captain request','demande commandant','special request','lmc','discretionary','water service','toilet service','request not to board','catering captain','signature missing','pfi','accept pax h-10'],companies:['ezy','vly'],notes:'VLY: a) Catering CDB b) Signature missing c) Extended briefing d) PFI e) Accept pax after H-10.'},
-{id:46,code:'66',desc:'Late Cabin Crew Boarding / Departure Procedures',keywords:['cabin crew late','pnc retard','cabin security check','slow settling','aisle obstruction','seating restriction','cabin management','cabin crew boarding','hôtesse retard','steward retard','pax slow','slow disembark','settling','débarquement'],companies:['ezy','vly'],notes:'EZY: security check >8 min, slow pax, offload cabin bags, CC only late. Gate → 15, volume → 10, entire crew → 63, standby → 67. VLY: other than connection/standby/transport.'},
-{id:47,code:'67',desc:'Cabin Crew Shortage / Manque PNC',keywords:['cabin crew shortage','pnc manque','pnc absent','hôtesse absente','sick cabin crew','no show pnc','ftl pnc','standby cc','visa pnc','navl','sick out of base'],companies:['ezy','vly'],notes:''},
-{id:48,code:'68',desc:'Cabin Crew Error / Non-Operational Special Request',keywords:['cabin crew error','erreur pnc','headcount error','comptage erreur','slide blown crew','toboggan','demande nettoyage','cleaners return','special request cc','miscounting','evacuation slide'],companies:['ezy','vly'],notes:'EZY: slide by non-crew → 52, gate count incorrect → 15. VLY: a) Miscounting b) Catering CC c) Slide deployed.'},
-{id:49,code:'69',desc:'Captain Security Check (EZY) / Not in use (VLG)',keywords:['captain security','security check extraordinary','baggage reconciliation','réconciliation bagage','demande capitaine sécurité','full security check','not in use'],companies:['ezy','vly'],notes:'EZY: captain request not required by GHM.'},
-{id:50,code:'71',desc:'Weather at Departure Station / Météo départ',keywords:['weather departure','météo départ','lvp','low visibility','brouillard','fog','vent','wind','visibilité','neige','snow','orage','storm','pluie','rain','ice','minima','cabin temperature'],companies:['ezy','vly'],notes:'EZY: LVP. VLY: all aircraft restrictions + cabin temperature.'},
-{id:51,code:'72',desc:'Weather at Destination / Météo destination',keywords:['weather destination','météo arrivée','destination weather','operating limits','icing conditions','wing inspection','minima','alternate'],companies:['ezy','vly'],notes:'EZY: ATFM → 84.'},
-{id:116,code:'73',desc:'En Route or Alternative – weather below minima (VLG)',keywords:['en route','enroute','turbulence','alternative','déroutement météo','weather en route'],companies:['vly'],notes:''},
-{id:52,code:'75',desc:'De-Icing of Aircraft / Dégivrage avion',keywords:['deicing','de-icing','dégivrage','anti-icing','givre','gel','frost','glycol','holdover','neige avion','ice removal aircraft','thawing'],companies:['ezy','vly'],notes:'EZY: airport → 76, fan blade → 78, equipment → 34. VLY: a) Before/after push b) Thawing c) Lack equipment.'},
-{id:53,code:'76',desc:'Removal Snow/Ice from Airport / Déneigement aéroport',keywords:['snow removal','déneigement','runway snow','piste neige','ice removal airport','sablage','sand','water removal','taxiway','walkway'],companies:['ezy','vly'],notes:''},
-{id:54,code:'77',desc:'Ground Handling Impaired by Weather / Handling perturbé par météo',keywords:['adverse weather','handling impaired','high winds','heavy rain','vent fort','pluie forte','cannot open doors','mobile steps','air bridge lower','passerelle vent','intempéries','finger not connectable'],companies:['ezy','vly'],notes:''},
-{id:55,code:'78',desc:'Fan Blade De-Icing / Dégivrage soufflantes moteur',keywords:['fan blade','dégivrage moteur','engine fan','ice fan blade','pale moteur','givre moteur','réacteur givre'],companies:['ezy'],notes:''},
-{id:56,code:'81',desc:'Slots – en-route ATC flow / ATFM demand/capacity',keywords:['atfm','slot','ctot','en-route','flow','demand','capacity','régulation','cfmu','slot en-route','atfcm'],companies:['ezy','vly'],notes:'EZY: measured from 3 min after door closure. Industrial action → 82.'},
-{id:57,code:'82',desc:'Slots – ATC Staff/Equipment En-route / Grève ATC',keywords:['atfm staff','atc staff shortage','equipment failure atc','grève atc','industrial action','manque personnel atc','capacity reduction','neighbouring area','grève contrôleur','manque contrôleur'],companies:['ezy','vly'],notes:''},
-{id:58,code:'83',desc:'Slot – Restriction at Destination / Restriction destination',keywords:['slot destination','restriction destination','runway closed destination','obstruction','curfew destination','special flights','noise abatement'],companies:['ezy','vly'],notes:'VLY: if departure → 89.'},
-{id:59,code:'84',desc:'Slot – Weather at Destination / Météo destination ATFM',keywords:['slot weather','atfm météo','weather destination slot','eobt','tobt','météo destination','slot météo','restriction météo'],companies:['ezy','vly'],notes:''},
-{id:60,code:'85',desc:'Mandatory Security / Sûreté obligatoire',keywords:['mandatory security','sûreté obligatoire','security check','level 4','baggage screening','fouille obligatoire','extended search','broken seal','scellé','disruptive passenger'],companies:['ezy','vly'],notes:'EZY: queues → 86. VLY: illness → 16, baggage offload late pax → 05.'},
-{id:61,code:'86',desc:'Immigration, Customs, Health / Douane, Santé, Sécurité crew/pax',keywords:['immigration','customs','douane','health','santé','police','security search','crew security','staff security','paf','passeport','file sûreté','pandemic','pandémie'],companies:['ezy','vly'],notes:''},
-{id:62,code:'87',desc:'Airport Facilities / Installations aéroport',keywords:['airport facilities','parking stand','gate limitation','fids','tannoy','security swipe','ramp congestion','infrastructure','conflict pax','lighting','gate layout','installations aéroport','stand allocation','jet bridge','passerelle','jetbridge','boarding pass printer','gate system','baggage sorting','tri bagage inop','security queue'],companies:['ezy','vly'],notes:'EZY: not for airbridge boarding time (→66/15). VLG: 11 sub-items including jet bridge inop.'},
-{id:63,code:'88',desc:'Restrictions at Destination Airport',keywords:['restriction destination','destination closed','runway obstruction','bomb scare','fire alert','evacuation','political unrest','curfew destination','couvre-feu','noise abatement'],companies:['ezy','vly'],notes:'EZY: measured from 3 min after door closure.'},
-{id:64,code:'89',desc:'Restrictions at Departure Airport / Restriction départ',keywords:['restriction departure','restriction départ','start-up','pushback clearance','cannot push','cannot move','departure restriction','ready but cannot','tow late','attente start-up','cdm','ramp congestion','runway closed','piste fermée','couvre-feu','runway configuration'],companies:['ezy','vly'],notes:'EZY: measured from 3 min after door closure. Headset/tug → 34. VLY: a) CDM b) Pushback ramp congestion c) Runway closed d-h) Other.'},
-{id:117,code:'91',desc:'Waiting for Transit Passengers and Bags (VLG)',keywords:['transit','correspondance','connecting pax','transfert','bagages transit','attente pax'],companies:['vly'],notes:''},
-{id:118,code:'92',desc:'Civil Aviation Inspection (VLG) – SANA, SAFA',keywords:['civil aviation','inspection','sana','safa','ramp check','contrôle aviation'],companies:['vly'],notes:''},
-{id:65,code:'93',desc:'Aircraft Rotation / Rotation avion',keywords:['reactionary','réactionnaire','rotation','late arrival','arrivée tardive','retard propagé','vol précédent','inbound','late inbound','aircraft rotation','previous sector'],companies:['ezy','vly'],notes:'VLY: if exceeds minimum ground time → reflect cause (e.g. 93+34). >160 pax: +5 min in 30 min turnarounds.'},
-{id:66,code:'94',desc:'Cabin Crew Rotation / Rotation PNC',keywords:['cabin crew rotation','pnc rotation','awaiting cabin crew','pnc vol précédent'],companies:['ezy','vly'],notes:'VLY: no lo utilizan (not used).'},
-{id:67,code:'95',desc:'Crew Rotation / Rotation équipage (pilotes ou complet)',keywords:['crew rotation','flight deck rotation','pnt rotation','pilot rotation','awaiting crew','équipage vol précédent','awaiting flight crew','schengen'],companies:['ezy','vly'],notes:'VLY: a) Schengen–Schengen b) Schengen–No Schengen or reverse.'},
-{id:68,code:'96',desc:'Operations Control / OCC',keywords:['operations control','occ','re-route','diversion','déroutement','consolidation','aircraft change non-tech','changement avion non technique','régulation','reroutage','occ error','operational protection','aog ops','curfew protection'],companies:['ezy','vly'],notes:'EZY: tech A/C change → 46. VLY: a) Protection b) OCC ERROR c) AOG d) DAMAGE e) CURFEW PROTECTION.'},
-{id:69,code:'97',desc:'Industrial Action – within own airline / Grève interne',keywords:['strike own','grève compagnie','grève interne','industrial action own','mouvement social'],companies:['ezy','vly'],notes:''},
-{id:70,code:'98',desc:'Industrial Action – outside own airline / Grève externe',keywords:['strike external','grève externe','grève handling','grève pompier','grève nationale','firemen','national strike','grève atc','x-ray strike','grève sûreté'],companies:['ezy','vly'],notes:'EZY: excl. ATS. VLY: a) ATC b) Handling c) Security X-ray.'},
-{id:71,code:'99',desc:'No matching code / Aucun code correspondant',keywords:['no code','pas de code','divers','miscellaneous','caa','regulatory','inspection','last resort','autre','si section','errors previous','additional cleaning','late fuel service'],companies:['ezy','vly'],notes:'EZY: last resort, explain in SI. VLY: a-e) Various including additional cleaning after A/C change.'},
-// ═══ VUELING OWN CODES ═══
-{id:200,code:'01',desc:'Late Passenger Cabin Delivery (VLG)',keywords:['cabin delivery','preflight','turnaround','livraison cabine','préparation cabine','temps rotation','H-30','H-25','H-22'],companies:['vly'],notes:'Preflight >10 min. Turnaround insufficient: H-30 (45+), H-25 (40), H-22 (35 min).'},
-{id:201,code:'02',desc:'Commercial Slot Discrepancy (VLG)',keywords:['slot discrepancy','slot commercial','créneau','plan de vol annulé'],companies:['vly'],notes:'Not in code 16. Also if FP cancelled by airport.'},
-{id:202,code:'03',desc:'Late Crew Pick-Up (VLG)',keywords:['crew pick up','ramassage équipage','transport crew','navette crew','bus crew'],companies:['vly'],notes:'Late crew pick up outside the airport.'},
-{id:203,code:'04',desc:'Slow Boarding/De-Boarding – High Volume PAX to Assist (VLG)',keywords:['slow boarding','embarquement lent','wch','wheelchair','fauteuil roulant','pmr','prm','psm','volume pax','débarquement lent'],companies:['vly'],notes:'Numerous WCH passengers. Include WCH type (R/C/S).'},
-{id:204,code:'05',desc:'Baggage Search/Offload (VLG)',keywords:['baggage search','offload','recherche bagage','no show','pax absent','bagage orphelin'],companies:['vly'],notes:'Searching checked-in baggage due to late/no-show pax.'},
-{id:205,code:'06',desc:'Excess Hand Baggage at Gate/On Board (VLG)',keywords:['hand baggage','bagage cabine','excès bagage','gate to hold','cabin bag','excess baggage'],companies:['vly'],notes:'Bags from gate to hold.'},
-{id:206,code:'07',desc:'Late Accommodation of Passengers (VLG)',keywords:['slow accommodation','slow disembarkation','débarquement lent','installation lente','pax lents'],companies:['vly'],notes:'a) Slow disembarkation b) Slow accommodation.'},
-{id:207,code:'08',desc:'Flight Time Higher Than Scheduled (VLG)',keywords:['flight time','temps de vol','block time','vol plus long','dépassement temps vol'],companies:['vly'],notes:''},
-{id:208,code:'09',desc:'Scheduled Ground Time < Declared Minimum (VLG)',keywords:['ground time','minimum ground time','rotation courte','turnaround court','escale insuffisante'],companies:['vly'],notes:''},
-];
+
+// Base VY convertie au format de la recherche rapide + codes personnalisés
+function vyAsCodes(){
+  return VY_DATA.map(d=>({
+    id:'vy'+d.c, code:d.c, g:d.g, desc:d.fr+' / '+d.t,
+    keywords:(d.k||'').split(/\s+/).filter(Boolean),
+    companies:['vly'],
+    notes:[...(d.i||[]),...(d.n||[]).map(n=>(n.b?n.b+' ':'')+n.t)].join(' · ')
+  }));
+}
 
 async function getCodes(){
-  try{ const r=await window.storage.get(KEY_CODES); if(r&&r.value) return JSON.parse(r.value); } catch(e){}
-  return DEFAULT_CODES;
+  let custom=[];
+  try{ const r=await window.storage.get(KEY_CODES); if(r&&r.value) custom=JSON.parse(r.value); } catch(e){}
+  return [...vyAsCodes(), ...custom];
 }
 
 async function saveCodes(codes){
@@ -2316,7 +2869,7 @@ async function quickSearchCodes(){
 
   container.innerHTML=results.map(c=>`
     <div class="qs-item" onclick="applyQuickCode('${c.code}','${c.desc.replace(/'/g,"\\'")}')">
-      <span class="qs-code">${c.code}</span>
+      <span class="qs-code g-${c.g||'div'}">${c.code}</span>
       <span class="qs-desc">${c.desc}</span>
       <span class="qs-add">+ Ajouter</span>
     </div>
@@ -2339,7 +2892,7 @@ function applyQuickCode(code,desc){
 // ── SWIPE BETWEEN TABS ───────────────────────────────────────────────
 let currentTab='calc';
 let touchStartX=0, touchStartY=0;
-const TAB_ORDER=['calc','timecalc','notes','history'];
+const TAB_ORDER=['calc','timecalc','notes','vy','history'];
 
 document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -2721,7 +3274,7 @@ async function importData(event){
     if(data.codes&&data.codes.length){
       // Merge custom codes (id > 1000 = user-added)
       let existing=[];
-      try{const r=await window.storage.get(KEY_CODES);if(r&&r.value)existing=JSON.parse(r.value);}catch(e){existing=DEFAULT_CODES;}
+      try{const r=await window.storage.get(KEY_CODES);if(r&&r.value)existing=JSON.parse(r.value);}catch(e){existing=[];}
       const existingIds=new Set(existing.map(c=>c.id));
       const newCodes=data.codes.filter(c=>!existingIds.has(c.id));
       await window.storage.set(KEY_CODES,JSON.stringify([...existing,...newCodes]));
